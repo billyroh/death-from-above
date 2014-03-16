@@ -3,30 +3,37 @@
   <head>
     <meta charset="utf-8">
     <title>D3 Test</title>
-    <script type="text/javascript" src="d3/d3.v3.min.js"></script>
+    <script type="text/javascript" src="javascripts/d3.v3.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.tipsy.js"></script>
+    <script type="text/javascript" src="javascripts/topojson.js"></script>
     <style>
       .axis path,
       .axis line {
         fill: none;
         stroke: black;
+        shape-rendering: crispEdges;
       }
       .axis text {
         font-family: sans-serif;
         font-size: 11px;
       }
     </style>
+    <link rel="stylesheet" href="tipsy.css" type="text/css" />
   </head>
 <body>
   <script type="text/javascript">
-    var width = 1200,
-        height = 200,
+    var width = $(window).width(),
+        height = 400,
         barWidth = 20,
-        padding = {top: 30, right: 30, bottom: 30, left: 30},
+        padding = {top: 30, right: 50, bottom: 30, left: 50},
         barPadding = 1,
         yScale,
         yScaleAxis,
         xScale,
-        xScaleAxis
+        xScaleAxis,
+        barFillColor = "rgb(0, 0, 0)",
+        barOpacity = 0.5
 
     var svg = d3.select("body").append("svg")
         .attr("width", width)
@@ -43,7 +50,7 @@
         return new Date(d.jsonDate);
     }
 
-    d3.json("data.json", function(error, json) {
+    d3.json("data/drones.json", function(error, json) {
       // Define dataset
       dataset = json.strike
       
@@ -59,17 +66,17 @@
 
       xScale = d3.time.scale()
         .domain([new Date(dataset[0].date), new Date(dataset[dataset.length - 1].date)])
-        .range([0, width])
-
-      xScaleAxis
+        .range([padding.left, width - padding.right])
 
       // Drawing bar graphs
       svg.selectAll("rect")
         .data(dataset)
         .enter()
         .append("rect")
+        .attr("fill", "rgb(0, 0, 0)")
+        .attr("opacity", 0.2)
         .attr("x", function(d, i) {
-          return xScale(new Date(d.date)) + padding.left
+          return xScale(new Date(d.date))
           return i * (width / dataset.length) + padding.left
         })
         .attr("y", function(d) {
@@ -89,6 +96,28 @@
             return yScale(numberOfDeaths)
           }
         })
+        .on("mouseover", function(d, i) {
+          d3.select(this).attr("opacity", 1)
+          //drawText(i)
+        })
+        .on("mouseout", function(d, i) {
+          d3.select(this).attr("opacity", barOpacity)
+        })
+        .append("svg:title")
+        .text(function(d) {
+          return d.deaths_max
+        })
+
+        function drawText(i) {
+          svg.selectAll("text")
+            .append("text")
+            .text(function() {
+              return dataset[i].deaths_max
+            })
+            .attr("x", 20)
+            .attr("y", 20)
+          console.log("deaths_max: " + dataset[i].deaths_max)
+        }
 
         // Define and draw y-axis
         var yAxis = d3.svg.axis()
@@ -111,6 +140,30 @@
           .attr("class", "axis")
           .attr("transform", "translate(0," + (height - padding.bottom) + ")")
           .call(xAxis)
+
+        $('svg rect').tipsy({ 
+          gravity: 'w', 
+          html: true, 
+          title: function() {
+            var d = this.__data__;
+            var content = ""
+            content += "country: " + d.country + "<br/>"
+            content += "deaths_min: " + d.deaths_min + "<br/>"
+            content += "deaths_max: " + d.deaths_min + "<br/>"
+            return content;
+            }
+        });
+    })
+
+    var g = svg.append("g");
+
+    d3.json("data/world-110m2.json", function(error, topology) {
+      g.selectAll("path")
+        .data(topojson.object(topology, topology.objects.countries)
+          .geometries)
+    .enter()
+      .append("path")
+      .attr("d", path)
     })
 
     /*
