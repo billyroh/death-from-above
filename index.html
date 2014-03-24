@@ -87,8 +87,8 @@ circle {
   <div class="timeline"></div>
 </div>
 <script>
-//// Map stuff
 
+//// Set up map
 var width = $(".map").width(),
     height = $(".map").height(),
     centered,
@@ -110,26 +110,18 @@ var zoom = d3.behavior.zoom()
     .translate([0, 0])
     .scale(1)
     .scaleExtent([1,8])
-    // .on("zoom", zoomed)
 
 var g = map.append("g")
 
 map.call(zoom.event)
 
-// Compute and store the centroids for each country
+// Store the centroids for each country
 var countryCentroids = []
 
 // Draw map
 d3.json("data/readme-world-names.json", function(error, world) {
   var countries = topojson.feature(world, world.objects.countries).features,
       neighbors = topojson.neighbors(world.objects.countries.geometries)
-
-  // Draw countries
-  // map.selectAll(".country")
-  //     .data(countries)
-  //   .enter().insert("path", ".graticule")
-  //     .attr("class", "country")
-  //     .attr("d", path)
 
   // Draw countries
   g.selectAll("path")
@@ -147,8 +139,10 @@ d3.json("data/readme-world-names.json", function(error, world) {
     .attr("transform", function(d) { countryCentroids.push([d.id, path.centroid(d)]); return "translate(" + (path.centroid(d)[0] - 18) + ", " + path.centroid(d)[1] + ")"; })
     .attr("dy", ".35em")
     .text(function(d) { return d.id; });
-});
 
+})
+
+// Set the max radius for the strikes
 var radiusMax = 60
 
 function isNumber(n){
@@ -162,6 +156,7 @@ d3.json("data/drones.json", function(error, json) {
         .domain([0, d3.max(dataset, function(d) { if(isNumber(d.deaths_max)) { return parseInt(d.deaths_max) } else { return 0 } })])
         .range([0, radiusMax])
 
+  // Draw circles on map
   g.selectAll(".circles")
     .data(dataset)
     .enter()
@@ -170,8 +165,11 @@ d3.json("data/drones.json", function(error, json) {
     .attr("r", function(d) { if(!isNumber(d.deaths_max)) { return 0 } return yScale(d.deaths_max) } )
     .attr("transform", function(d) { return "translate(" + projection([d.lon, d.lat]) + ")" } )
     .on("click", function(d) { return clicked(d) })
+
 })
 
+// Tweening between projections
+// Source: http://bl.ocks.org/mbostock/3711652
 function projectionTween(projection0, projection1) {
   return function(d) {
     var t = 0;
@@ -196,6 +194,7 @@ function projectionTween(projection0, projection1) {
   };
 }
 
+var zoomed = false
 
 // Read this maybe? http://www.d3noob.org/2014/03/leaflet-map-with-d3js-elements-that-are.html
 // http://bl.ocks.org/d3noob/5193723
@@ -203,34 +202,22 @@ function projectionTween(projection0, projection1) {
 function clicked(strike) {
   var x,
       y,
-      k = 2,
+      k = 3,
       country = strike.country,
       xScaleZoom = d3.scale.linear().range([0, width]).domain([strike.x, strike.x + strike.dx]),
       yScaleZoom = d3.scale.linear().range([0, height]).domain([strike.y, strike.y + strike.dy]),
       newProjection
+
+  zoomed = !zoomed
 
   // Get country name
   // Get country's centroid
   for (var i = 0; i < countryCentroids.length; i++) {
     if (countryCentroids[i][0] == country) {
       x = countryCentroids[i][1][0]
-      y = countryCentroids[i][1][1] - 50
+      y = countryCentroids[i][1][1] - 80
     }
   }
-
-  //var countryCentroids = [[["Yemen"], [30, 25, 6]], [["Pakistan"], [50, 50, 3]], [["Somalia"], [40, 30, 3]]]
-
-  // Get new centre coordinates from the centroid
-  // I think the centre coordinates aren't in latlng, which is fucking everything up
-  // Then use the new projection to calculate where the circles should go
-  // That should work hopefully?
-  newProjection = d3.geo.kavrayskiy7()
-    .center([44, 19.5])
-    .scale(750 * k)
-    .translate([width / 3.5, height / 5])
-
-  newPath = d3.geo.path()
-    .projection(newProjection)
 
   var transitionTime = 750
 
@@ -243,35 +230,18 @@ function clicked(strike) {
   g.selectAll(".country-name")
     .transition()
     .duration(transitionTime / 5)
-    //.attr("transform", function(d) { console.log(d); return } )
     .style("opacity", 0)
 
-  // // Zoom in on country somehow??????
-  // map.selectAll(".country")
-  //   .transition()
-  //   .duration(transitionTime)
-  //   // .attr("d", newPath)
-  //   .attrTween("d", projectionTween(projection, newProjection));
+  var circleScaleValue = (1 / k)
+  if (!zoomed) {
+    circleScaleValue = 1
+  }
 
-  // 
-  // map.selectAll(".country")
-  //   .transition()
-  //   .duration(transitionTime)
-  //   .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")scale(" + k + ")translate(" + -x +  ", " + -y + ")")
-    // .attr("transform", function(d) { return "translate(" + newProjection([44,19.5]) + ")" } )
-    // .attr("cx", 44)
-
-  console.log(projection.center())
-
-  // Circles
-  map.selectAll(".strike")
+  g.selectAll(".strike")
     .transition()
     .duration(transitionTime)
-    // .attr("d", path.projection(projection))
-    // .attr("cx", function(d) { tempCx = d } )
-    // .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")translate(" + -x*0.1 +  ", " + -y*0.1 + ")" )
-    .attr("transform", function(d) { return "translate(" + newProjection([d.lon, d.lat]) + ")" } )
-    //.attr("transform", function(d) { console.log(d); return "translate(" + xScaleZoom(d.x) + ", " + yScaleZoom(d.y) + ")" })
+    .attr("r", function(d) { if(!isNumber(d.deaths_max)) { return 0 } return yScale(d.deaths_max) * circleScaleValue })
+
 }
 
 //// Timeline
