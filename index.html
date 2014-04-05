@@ -32,7 +32,7 @@ h1, h2, p {
 
 .feature {
   fill: #ccc;
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 
 circle {
@@ -49,6 +49,8 @@ circle.strike, circle.timeline-circle {
   fill: rgb(200, 18, 18);
   opacity: 0.2;
   cursor: pointer;
+  -webkit-transition: all 150ms;
+  transition: all 150ms;
 }
 
 .feature.active {
@@ -81,6 +83,11 @@ circle.strike, circle.timeline-circle {
   margin-top: 10px;
 }
 
+.timeline-by-country {
+  width: 100%;
+  height: 1000px;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -98,6 +105,13 @@ circle.strike, circle.timeline-circle {
   cursor: default;
 }
 
+circle.not-applicable {
+  opacity: 0;
+  /*display: none;*/
+}
+
+
+/* Tooltip shit */
 
 .d3-tip {
   line-height: 1;
@@ -130,16 +144,20 @@ circle.strike, circle.timeline-circle {
 
 </style>
 <body>
+<div class="data-type-selector-wrapper">
+  <select class="data-type-selector">
+    <option class="data-type" value="deaths_max" selected="selected">Maximum Death Estimate</option>
+    <option class="data-type" value="deaths_min">Minimum Death Estimate</option>
+    <option class="data-type" value="civilians">Civilians</option>
+    <option class="data-type" value="children">Children</option>
+    <option class="data-type" value="injuries">Injuries</option>
+  </select>
+</div>
 <div class="text" id="intro">
   <h1>Death from Above</h1>
   <p>Mapping deaths from drone strikes.</p>
 </div>
-<div class="section" id="map-section">
-  <h2>By Latitude, Longitude</h2>
-  <p>Hover over the timeline to learn about each individual strike. You can also click on the strikes to zoom into each region.</p>
-  <div class="timeline"></div>
-  <div class="map"></div>
-</div>
+
 <div class="section" id="timeline-section">
   <!--
 
@@ -153,46 +171,35 @@ circle.strike, circle.timeline-circle {
    -->
   <h2>By Country</h2>
   <p>Each circle corresponds to a single strike.</p>
+  <div class="timeline-by-country"></div>
 </div>
-<div class="section" id="timeline-section">
-  <!--
-
-  x axis: time
-  y axis: country
-
-  stack each country's timeline, plot each strike along its x axis
-  have control to toggle radius scaled to magnitude of each strike
-
-   -->
-  <h2>By Country</h2>
-  <p>Each circle corresponds to a single strike.</p>
+<div class="section" id="map-section">
+  <h2>By Latitude, Longitude</h2>
+  <p>Hover over the timeline to learn about each individual strike. You can also click on the strikes to zoom into each region.</p>
+  <div class="timeline"></div>
+  <div class="map"></div>
 </div>
 <script src="javascripts/d3.v3.min.js"></script>
 <script src="javascripts/topojson.v1.min.js"></script>
 <script src="javascripts/d3.geo.projection.v0.min.js"></script>
 <script src="javascripts/jquery-1.11.0.min.js"></script>
 <script src="javascripts/d3.tip.v0.6.3.js"></script>
+
 <script>
+
+// Global variables
 
 var width = $(".map").width(),
     height = $(".map").height(),
     padding = {top: 10, right: 20, bottom: 25, left: 20},
-    active = d3.select(null);
-
-var midLon = 56.9117872504883 ,
+    active = d3.select(null),
+    midLon = 56.9117872504883,
     midLat = 17.35921249538195,
-    projection
+    selectedDataType = "deaths_max",
+    transitionTime = 1000
 
 // TODO fix assignment of midLon, midLat
 // projection is finishing before the assignment is finished...
-
-// function assignLonLat(lon, lat) {
-//   console.log(lon + ", " + lat)
-//   midLon = lon
-//   midLat = lat
-//   console.log("lon: " + midLon)
-//   console.log("lat: " + midLat)
-// }
 
 // d3.json("data/drones.json", function(error, json) {
 //   dataset = json.strike
@@ -203,13 +210,18 @@ var midLon = 56.9117872504883 ,
   
 //   midLon = (parseFloat(maxLon) + parseFloat(minLon)) / 2
 //   midLat = (parseFloat(maxLat) + parseFloat(minLat)) / 2
-//   assignLonLat(midLon, midLat)
 // })
+
+
+
+
+
+
+// Map variables
 
 var projection = d3.geo.kavrayskiy7()
     .center([midLon, midLat])
     .scale(600)
-    //.translate([width / 3.5, height / 5])
 
 var zoom = d3.behavior.zoom()
     .translate([0, 0])
@@ -223,7 +235,6 @@ var path = d3.geo.path()
 var svg = d3.select(".map").append("svg")
     .attr("width", width)
     .attr("height", height)
-    // .on("click", stopped, true);
 
 svg.append("rect")
     .attr("class", "background")
@@ -240,15 +251,14 @@ var tip = d3.tip()
   .offset([-10, 0])
   .html(function(d) {
     console.log("test");
-    return "<strong>Frequency:</strong> <span style='color:red'>" + d.deaths_max + "</span>";
+    return "<strong>Frequency:</strong> <span style='color:red'>" + d[selectedDataType] + "</span>";
   })
 //// TODO actually implement tooltips
 g.call(tip)
 
-svg
-    //.call(zoom) // delete this line to disable free zooming
-    .call(zoom.event);
+svg.call(zoom.event);
 
+// Draw Map
 d3.json("data/readme-world-names.json", function(error, world) {
   var countries = topojson.feature(world, world.objects.countries).features
   g.selectAll("path")
@@ -275,72 +285,9 @@ d3.json("data/readme-world-names.json", function(error, world) {
     .text(function(d) { return d.id; });
 })
 
-// Set the max radius for the strikes
-var radiusMax = 50,
-    circleOpacityHighlight = 0.5,
-    circleOpacityDefault = 0.2,
-    circleOpacitySuppressed = 0.01
-
-function isNumber(n){
-  return typeof(n) != "boolean" && !isNaN(n);
-}
-
-function reset() {
-  active.classed("active", false);
-  active = d3.select(null);
-
-  svg.transition()
-      .duration(transitionTime)
-      .call(zoom.translate([0, 0]).scale(1).event);
-}
-
-function zoomed() {
-  g.style("stroke-width", 1.5 / d3.event.scale + "px");
-  g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-}
-
-// If the drag behavior prevents the default click,
-// also stop propagation so we don’t click-to-zoom.
-function stopped() {
-  if (d3.event.defaultPrevented) d3.event.stopPropagation();
-}
-
-var affectedCountries = []
-
-d3.json("data/drones.json", function(error, json) {
-  dataset = json.strike
-  yScale = d3.scale.linear()
-        .domain([0, d3.max(dataset, function(d) { if(isNumber(d.deaths_max)) { return parseInt(d.deaths_max) } else { return 0 } })])
-        .range([5, radiusMax])
-
-  // Draw circles on map
-  g.selectAll("circle")
-    .data(dataset)
-    .enter()
-    .append("circle")
-      .attr("class", "strike")
-      .attr("id", function(d) { if (jQuery.inArray(d.country, affectedCountries) == -1) { affectedCountries.push(d.country) } ; return d._id })
-      .attr("r", function(d) { if(!isNumber(d.deaths_max)) { return 0 } return yScale(d.deaths_max) } )
-      .attr("transform", function(d) { return "translate(" + projection([d.lon, d.lat]) + ")" } )
-      .style("opacity", circleOpacityDefault)
-      .on("click", function(d) { return $("#" + d.country.replace(" ", "-")).d3Click() } )
-      //// TODO actually implement tooltips
-      .on("mouseover", function(d) { tip.show; highlightStrike("map", d._id) } )
-      .on("mouseout", function(d) { tip.hide; $("circle.timeline-circle").css("opacity", circleOpacityDefault) } )
-
-})
-
-var transitionTime = 1000
-
+// Click handler for map
 function clicked(d) {
-  console.log("")
-  console.log("clicked")
-  console.log(d)
   if (active.node() === this || jQuery.inArray(d.id, affectedCountries) == -1) {
-    scaleCircles(1)
-    console.log("reset")
-    $(".timeline-circle").css("opacity", circleOpacityDefault)
-    $(".timeline-circle").css("display", "block")
     return reset()
   }
 
@@ -360,34 +307,34 @@ function clicked(d) {
       .duration(transitionTime)
       .call(zoom.translate(translate).scale(scale).event)
 
+  // Scale circles on zoom
   scaleCircles(circleScaleValue)
 
   // Fade out the strikes in the timeline not in country
-  $(".timeline-circle").css("opacity", 0)
-  $(".timeline-circle").css("display", "none")
-  $(".timeline-" + d.id.replace(" ", "-")).css("opacity", circleOpacityDefault)
-  $(".timeline-" + d.id.replace(" ", "-")).css("display", "block")
+  var selector = ".timeline-circle:not(.timeline-" + d.id.replace(" ", "-") + ")"
+
+  // $(selector).attr("class", ($(selector).attr("class") + " not-applicable"))
+  $(selector).css("opacity", 0)
+  // $(".timeline-" + d.id.replace(" ", "-")).css("opacity", circleOpacityDefault)
 }
 
+// Scale circles on map
 function scaleCircles(circleScaleValue) {
-  var opacityValue = 0.5
-  if (circleScaleValue == 1) {
-    opacityValue = 1
-  }
   g.selectAll(".strike")
     .transition()
     .duration(transitionTime)
-    .attr("r", function(d) { if(!isNumber(d.deaths_max)) { return 0 } return yScale(d.deaths_max) * circleScaleValue })
+    // .attr("r", function(d) { if(!isNumber(d[selectedDataType])) { return 0 } return yScale(d[selectedDataType]) * circleScaleValue })
+    .attr("r", function(d) { if(!isNumber(d[selectedDataType])) { return 0 } return d[selectedDataType] * circleScaleValue })
   
-  g.selectAll(".feature")
-    .transition()
-    .duration(transitionTime)
-    .style("opacity", opacityValue)
+  // g.selectAll(".feature")
+  //   .transition()
+  //   .duration(transitionTime)
+  //   .style("opacity", opacityValue)
 
-  g.selectAll(".feature.active")
-    .transition()
-    .duration(transitionTime)
-    .style("opacity", 1)
+  // g.selectAll(".feature.active")
+  //   .transition()
+  //   .duration(transitionTime)
+  //   .style("opacity", 1)
 }
 
 // Dispatches click event for d3 objects
@@ -399,24 +346,108 @@ jQuery.fn.d3Click = function () {
   })
 }
 
-//// Set up timeline
+// Resets map back to default state
+function reset() {
+  // Scale circles
+  scaleCircles(1)
+  
+  // Reset node thing
+  active.classed("active", false);
+  active = d3.select(null);
+
+  // Reset opacity
+  $("circle.timeline-circle").css("opacity", circleOpacityDefault)
+  $("circle.strike").css("opacity", circleOpacityDefault)
+
+  // Reset zoom
+  svg.transition()
+      .duration(transitionTime)
+      .call(zoom.translate([0, 0]).scale(1).event);
+}
+
+// Zoom behaviour 
+function zoomed() {
+  g.style("stroke-width", 1.5 / d3.event.scale + "px");
+  g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+// Set the max radius for the strikes
+var radiusMax = 50,
+    circleOpacityHighlight = 0.5,
+    circleOpacityDefault = 0.2,
+    circleOpacitySuppressed = 0.05,
+    strikesOnMap
+
+// Checks if input is a number
+function isNumber(n){
+  return typeof(n) != "boolean" && !isNaN(n);
+}
+
+// Store array of affected countries to check against later
+var affectedCountries = []
+
+// Draw circles on map
+d3.json("data/drones.json", function(error, json) {
+  dataset = json.strike
+  yScale = d3.scale.linear()
+        .domain([0, d3.max(dataset, function(d) { if(isNumber(d[selectedDataType])) { return parseInt(d[selectedDataType]) } else { return 0 } })])
+        .range([5, radiusMax])
+
+
+  strikesOnMap = g.selectAll("circle")
+    .data(dataset)
+    .enter()
+    .append("circle")
+      .attr("class", "strike")
+      .attr("id", function(d) { if (jQuery.inArray(d.country, affectedCountries) == -1) { affectedCountries.push(d.country) } ; return d._id })
+      // .attr("r", function(d) { if(!isNumber(d[selectedDataType])) { return 0 } return yScale(d[selectedDataType]) } )
+      .attr("r", function(d) { if(!isNumber(d[selectedDataType])) { return 0 } return d[selectedDataType] } )
+      .attr("transform", function(d) { return "translate(" + projection([d.lon, d.lat]) + ")" } )
+      .on("click", function(d) { return $("#" + d.country.replace(" ", "-")).d3Click() } )
+      //// TODO actually implement tooltips
+      .on("mouseover", function(d) { tip.show; highlightStrike(d._id, d.country) } )
+      .on("mouseout", function(d) { tip.hide; fadeInStrikes(d.country)} )
+})
+
+function highlightStrike(id, country) {
+  var selector = ".timeline-" + country.replace(" ", "-")
+  $("circle.strike").css("opacity", circleOpacitySuppressed)
+  $("circle#" + id).css("opacity", circleOpacityHighlight)
+  $(selector).css("opacity", circleOpacitySuppressed)
+  $("circle#timeline-" + id).css("opacity", circleOpacityHighlight)
+}
+
+function fadeInStrikes(country) {
+  var selector = ".timeline-" + country.replace(" ", "-")
+  $("circle.strike").css("opacity", circleOpacityDefault)
+  $(selector).css("opacity", circleOpacityDefault)
+}
+
+function resetOpacity() {
+  $("circle.timeline-circle").css("opacity", circleOpacityDefault)
+  $("circle.strike").css("opacity", circleOpacityDefault)
+}
+
+// Timeline variables
 var timelineWidth = $(".timeline").width(),
     timelineHeight = $(".timeline").height(), 
     xScale,
     timeline,
-    dataset
+    dataset,
+    strikesOnTimeline
 
 timeline = d3.select(".timeline").append("svg")
         .attr("width", timelineWidth)
         .attr("height", timelineHeight)
 
+// Set up timeline
 d3.json("data/drones.json", function(error, json) {
   dataset = json.strike
   xScale = d3.time.scale()
           .domain([new Date(dataset[0].date), new Date(dataset[dataset.length - 1].date)])
           .range([padding.left, width - padding.right])
 
-  timeline.selectAll("circle")
+  strikesOnTimeline = timeline.selectAll("circle")
     .data(dataset)
     .enter()
     .append("circle")
@@ -425,8 +456,8 @@ d3.json("data/drones.json", function(error, json) {
     .attr("r", 3)
     .attr("cx", function(d) { return xScale(new Date(d.date)) })
     .attr("cy", 18)
-    .on("mouseover", function(d) { return highlightStrike("timeline", d._id) } )
-    .on("mouseout", function(d) { $("circle.strike").css("opacity", 0.2) } )
+    .on("mouseover", function(d) { return highlightStrike(d._id, d.country) } )
+    .on("mouseout", function(d) { fadeInStrikes() } )
     .on("click", function(d) { return $("#" + d.country.replace(" ", "-")).d3Click() } )
 
   // Define and draw x-axis
@@ -441,18 +472,66 @@ d3.json("data/drones.json", function(error, json) {
     .call(xAxis)
 })
 
-function highlightStrike(context, id) {
-  var className = "strike",
-      idName = ""
+// TODO Change data type on change event
+// how to call change
+// http://bl.ocks.org/mbostock/3943967
 
-  if (context == "map") {
-    className = "timeline-circle"
-    idName = "timeline-"
-  }
+// join/update/exit
+// part 1
+// http://bl.ocks.org/mbostock/3808218
+// part 2
+// http://bl.ocks.org/mbostock/3808221
+// part 3
+// http://bl.ocks.org/mbostock/3808234
 
-  $("circle." + className).css("opacity", circleOpacitySuppressed)
-  $("circle#" + idName + id).css("opacity", circleOpacityHighlight)
-  // $()
+d3.select(".data-type-selector").on("change", change)
+
+// TODO Change data types
+function change() {
+  // Get new data type
+  selectedDataType = $(".data-type-selector").val()
+
+  // Shrink circles for old data
+  // Animate in new data
+
+  // Join new data
+  var strikesOnMapNew = strikesOnMap
+    .data(function(d) { d[selectedDataType] })
+
+  strikesOnMapNew
+
+  strikesOnMap.transition()
+    .duration(transitionTime)
+    .attr("r", function(d) {  } )
 }
+
+
+/*
+
+Timeline per country
+
+*/
+
+d3.json("data/drones.json", function(error, json) {
+  dataset = json.strike
+  xScale = d3.time.scale()
+          .domain([new Date(dataset[0].date), new Date(dataset[dataset.length - 1].date)])
+          .range([padding.left, width - padding.right])
+
+
+  
+  // Define and draw x-axis
+  var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("top")
+    .ticks(10)
+
+  // timeline.append("g")
+  //   .attr("class", "axis")
+  //   .attr("transform", "translate(10," + (timelineHeight - padding.top) + ")")
+  //   .call(xAxis)
+})
+
+
 
 </script>
