@@ -7,7 +7,7 @@ body {
   color: #454545;
   margin: 0 auto;
   padding: 60px;
-  max-width: 1000px;
+  max-width: 945px;
   min-width: 320px;
 }
 
@@ -30,15 +30,17 @@ h1, h2, p {
   width: 300px;
   float: left;
   float: left;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .sparkline-wrapper {
   display: block;
+  height:;
 }
 
 .sparkline {
   height: 150px;
+  display: block;
 }
 
 .sparkline:last-child {
@@ -188,21 +190,25 @@ circle.not-applicable {
     <div class="country-label" id="Somalia">Somalia</div>
   </div>
   <div class="sparkline-wrapper" id="deaths-max">
+    <div class="data-type-label">Maximum Death Estimate</div>
     <svg class="sparkline" id="Pakistan"></svg>
     <svg class="sparkline" id="Yemen"></svg>
     <svg class="sparkline" id="Somalia"></svg>
   </div>
   <div class="sparkline-wrapper" id="deaths-min">
+    <div class="data-type-label">Minimum Death Estimate</div>
     <svg class="sparkline" id="Pakistan"></svg>
     <svg class="sparkline" id="Yemen"></svg>
     <svg class="sparkline" id="Somalia"></svg>
   </div>
   <div class="sparkline-wrapper" id="children">
+    <div class="data-type-label">Child Death Estimate</div>
     <svg class="sparkline" id="Pakistan"></svg>
     <svg class="sparkline" id="Yemen"></svg>
     <svg class="sparkline" id="Somalia"></svg>
   </div>
   <div class="sparkline-wrapper" id="civilians">
+    <div class="data-type-label">Civilian Death Estimate</div>
     <svg class="sparkline" id="Pakistan"></svg>
     <svg class="sparkline" id="Yemen"></svg>
     <svg class="sparkline" id="Somalia"></svg>
@@ -289,25 +295,42 @@ for (var i = 0; i < dataTypesCSS.length; i++) {
 d3.json("data/drones.json", function(error, json) {
   var dataset = json.strike,
       xScale,
-      yScale;
+      yScale,
+      yScaleDeathsMax
 
   // Calculate sum for each year for each data type
-  // Caveat: If it's an estimate, I'm just taking the average
+  // Caveat: If it's an estimate, I'm just taking the average........I should probably change this
+  // TODO: make a bar chart with an error bars
   for (var i = 0; i < dataTypesJSON.length; i++) {
     annualSums[dataTypesJSON[i]] = d3.nest()
-    .key(function(d) { return d.country })
-    .key(function(d) { return d.date.substring(0,4) })
-    .rollup(function(d) { 
-      return d3.sum(d, function(g) { return getMaximumFromString(g[dataTypesJSON[i]]) })
-    }).entries(dataset);
+      .key(function(d) { return d.country })
+      .key(function(d) { return d.date.substring(0,4) })
+      .rollup(function(d) { 
+        return d3.sum(d, function(g) { return getMaximumFromString(g[dataTypesJSON[i]]) })
+      }).entries(dataset)
   }
 
-  // yScale = d3.scale.linear()
-  //       .domain([0, d3.max(annualSums, function(d) { return d })])
-  //       .range([5, 150])
-  // xScale = d3.scale.linear()
-  //       .domain([2002, 2014])
-  //       .range([1, 5])
+  // Bar chart variables
+  var barWidth = 10,
+      barHeight = 150,
+      yScaleDeathsMax = d3.scale.linear()
+            .domain([0, getMaxOfDataType("deaths_max")])
+            .range([0, barHeight]),
+      yScaleDeathsMin = d3.scale.linear()
+            .domain([0, getMaxOfDataType("deaths_min")])
+            .range([0, barHeight]),
+      yScaleChildren = d3.scale.linear()
+            .domain([0, getMaxOfDataType("children")])
+            .range([0, barHeight]),
+      yScaleCivilians = d3.scale.linear()
+            .domain([0, getMaxOfDataType("civilians")])
+            .range([0, barHeight]),
+      yScale = {
+        "deaths_max": yScaleDeathsMax,
+        "deaths_min": yScaleDeathsMin,
+        "children": yScaleChildren,
+        "civilians": yScaleCivilians
+      }
 
   // Draw out each yearly sum for each year, for each data type
   for (var i = 0; i < dataTypesCSS.length; i++) {
@@ -316,16 +339,51 @@ d3.json("data/drones.json", function(error, json) {
           countryName = countryAnnualSum.key,
           annualData = countryAnnualSum.values;
 
+      var currentYScale = yScale[dataTypesJSON[i]]
+
       d3.select("#" + dataTypesCSS[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("rect")
         .data(annualData)
         .enter().append("rect")
-          .attr("x", function(d, i) { return (parseFloat(d.key) - 2002) * 5 })
-          .attr("y", function(d, i) {  })
-          .attr("width", 5)
-          .attr("height", function(d) { return d.values })
+          .attr("x", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth })
+          .attr("y", function(d, i) { return 150 - currentYScale(d.values) })
+          .attr("width", barWidth)
+          .attr("height", function(d) { return currentYScale(d.values) })
     }
   }
-});
+
+  // TODO y axis
+  var yAxis = d3.svg.axis()
+    .scale(yScale)
+
+    // xScale = d3.scale.linear()
+  //       .domain([2002, 2014])
+  //       .range([1, 5])
+
+  //   // Define and draw x-axis
+//   var xAxis = d3.svg.axis()
+//     .scale(xScale)
+//     .orient("top")
+//     .ticks(10)
+
+//   timeline.append("g")
+//     .attr("class", "axis")
+//     .attr("transform", "translate(10,2)")
+//     .call(xAxis)
+})
+
+function getMaxOfDataType(dataType) {
+  var array = []
+  console.log(annualSums[dataType][0]);
+  for (var i = 0; i < annualSums[dataType].length; i++) {
+    // for (var j = 0; j < annualSums[dataType][i].length; j++) {
+    //   console.log("hi");
+    //   console.log(annualSums["deaths_max"][i].values[j].values);
+    //   test.push(annualSums["deaths_max"][i].values[j].values)
+    // }
+    array.push(d3.max(annualSums[dataType][i].values, function(d) { return d.values }))
+  }
+  return d3.max(array)
+}
 
 function getMaximumFromString(input) {
   if (input.lastIndexOf("-") == -1) { 
@@ -335,7 +393,7 @@ function getMaximumFromString(input) {
         min = parseFloat(input.substring(1, input.lastIndexOf("-") - 1))
     return Math.ceil((min + max) / 2)
   }
-};
+}
 
 
 // // Timeline variables
