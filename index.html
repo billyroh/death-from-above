@@ -35,7 +35,8 @@ h1, h2, p {
 
 .sparkline-wrapper {
   display: block;
-  height:;
+  margin-bottom: 20px;
+  height: 200px;
 }
 
 .sparkline {
@@ -47,7 +48,9 @@ h1, h2, p {
   margin-right: 0px;
 }
 
-
+.data-type-label {
+  margin-bottom: 10px;
+}
 
 /* Map Stuff */
 
@@ -269,8 +272,8 @@ Timeline by country
 */
 
 // Set up
-var sparklineWidth = $(".timeline-by-country").width(),
-    sparklineHeight = $(".timeline-by-country").height(),
+var sparklineWidth = $(".sparkline").width(),
+    sparklineHeight = $(".sparkline").height(),
     dataTypesCSS = ["deaths-max", "deaths-min", "children", "civilians"],
     dataTypesJSON = ["deaths_max", "deaths_min", "children", "civilians"],
     affectedCountries = ["Pakistan", "Yemen", "Somalia"],
@@ -279,7 +282,13 @@ var sparklineWidth = $(".timeline-by-country").width(),
         "deaths_min": [],
         "children": [],
         "civilians": [],
-      };
+      },
+    padding = {
+      "top": 20,
+      "right": 20,
+      "bottom": 20,
+      "left": 20
+    }
 
 // Create containers for the annual sums
 // sorry for the bad code :( im bad at programming
@@ -311,20 +320,20 @@ d3.json("data/drones.json", function(error, json) {
   }
 
   // Bar chart variables
-  var barWidth = 10,
+  var barWidth = ($(".sparkline").width() - 20) / (2014 - 2002),
       barHeight = 150,
       yScaleDeathsMax = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths_max")])
-            .range([0, barHeight]),
+            .range([barHeight, 0]),
       yScaleDeathsMin = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths_min")])
-            .range([0, barHeight]),
+            .range([barHeight, 0]),
       yScaleChildren = d3.scale.linear()
             .domain([0, getMaxOfDataType("children")])
-            .range([0, barHeight]),
+            .range([barHeight, 0]),
       yScaleCivilians = d3.scale.linear()
             .domain([0, getMaxOfDataType("civilians")])
-            .range([0, barHeight]),
+            .range([barHeight, 0]),
       yScale = {
         "deaths_max": yScaleDeathsMax,
         "deaths_min": yScaleDeathsMin,
@@ -344,20 +353,56 @@ d3.json("data/drones.json", function(error, json) {
       d3.select("#" + dataTypesCSS[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("rect")
         .data(annualData)
         .enter().append("rect")
-          .attr("x", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth })
-          .attr("y", function(d, i) { return 150 - currentYScale(d.values) })
+          .attr("x", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
+          .attr("y", function(d, i) { return currentYScale(d.values) + padding.bottom })
           .attr("width", barWidth)
-          .attr("height", function(d) { return currentYScale(d.values) })
+          .attr("height", function(d) { return sparklineHeight - currentYScale(d.values) })
     }
   }
 
   // TODO y axis
-  var yAxis = d3.svg.axis()
-    .scale(yScale)
+  var yAxis = {
+    "deaths_max": [],
+    "deaths_min": [],
+    "civilians": [],
+    "children": [],
+  },
+      xAxis,
+      xScale = d3.scale.linear()
+        .domain([2002, 2014])
+        .range([0, $(".sparkline").width()])
 
-    // xScale = d3.scale.linear()
-  //       .domain([2002, 2014])
-  //       .range([1, 5])
+  // Calculate and draw y-axes
+  for (var i = 0; i < dataTypesJSON.length; i++) {
+
+    xAxis = d3.svg.axis()
+      .scale(xScale)
+      .orient("bottom")
+      .ticks(2)
+
+    // Define y axis
+    yAxis[dataTypesJSON[i]] = d3.svg.axis()
+      .scale(yScale[dataTypesJSON[i]])
+      .orient("left")
+      .ticks(3)
+
+    // y axis
+    d3.select("#" + dataTypesCSS[i] + ".sparkline-wrapper > " + "#Pakistan.sparkline")
+      .append("g").call(yAxis[dataTypesJSON[i]])
+      .attr("transform", "translate(30,0)")
+      .attr("class", "axis")
+
+    // x axis
+    d3.selectAll(".sparkline")
+      .append("g").call(xAxis)
+      .attr("transform", "translate(0," + (sparklineHeight - padding.bottom) + ")")
+      .attr("class", function(d) { return "axis" })
+  }
+
+  // Calculate and draw x-axes
+
+  
+
 
   //   // Define and draw x-axis
 //   var xAxis = d3.svg.axis()
