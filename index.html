@@ -71,8 +71,8 @@ h1, h2, p {
   /*cursor: pointer;*/
 }
 
-circle {
-  fill: none;
+circle.sparkline {
+  fill: #fff;
   stroke: #000;
   stroke-width: 2px;
   stroke-linecap: round;
@@ -152,6 +152,14 @@ circle.strike, circle.timeline-circle {
 circle.not-applicable {
   opacity: 0;
   /*display: none;*/
+}
+
+line {
+  stroke: #000;
+}
+
+line.sparkline {
+  stroke: #000;
 }
 
 
@@ -314,16 +322,16 @@ d3.json("data/drones.json", function(error, json) {
       yScaleDeathsMax
 
   // Calculate sum for each year for each data type
-  var dataTypesProper = ["deaths", "children", "civilians"]
-  for (var i = 0; i < dataTypesProper.length; i++) {
-    annualSums[dataTypesProper[i]] = d3.nest()
+  var dataTypes = ["deaths", "children", "civilians"]
+  for (var i = 0; i < dataTypes.length; i++) {
+    annualSums[dataTypes[i]] = d3.nest()
       .key(function(d) { return d.country })
       .key(function(d) { return d.date.substring(0,4) })
       .rollup(function(d) { 
         return {
-          "minimum": d3.sum(d, function(g) { {return getIntegerFromString(g[dataTypesProper[i]], "minimum")} }),
-          "average": d3.sum(d, function(g) { {return getIntegerFromString(g[dataTypesProper[i]], "average")} }),
-          "maximum": d3.sum(d, function(g) { {return getIntegerFromString(g[dataTypesProper[i]], "maximum")} })
+          "minimum": d3.sum(d, function(g) { {return getIntegerFromString(g[dataTypes[i]], "minimum")} }),
+          "average": d3.sum(d, function(g) { {return getIntegerFromString(g[dataTypes[i]], "average")} }),
+          "maximum": d3.sum(d, function(g) { {return getIntegerFromString(g[dataTypes[i]], "maximum")} })
         }
       }).entries(dataset)
   }
@@ -331,6 +339,7 @@ d3.json("data/drones.json", function(error, json) {
   // Bar chart variables
   var barWidth = ($(".sparkline").width() - 20) / (2014 - 2002),
       barHeight = 150,
+      barHeight = $(".sparkline").height() - padding.top,
       yScaleDeaths = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths")])
             .range([barHeight - padding.bottom, 0]),
@@ -346,23 +355,34 @@ d3.json("data/drones.json", function(error, json) {
         "civilians": yScaleCivilians
       }
 
-  dataTypesProper = ["deaths", "children", "civilians"]
+  dataTypes = ["deaths", "children", "civilians"]
 
   // Draw out each yearly sum for each year, for each data type
-  for (var i = 0; i < dataTypesProper.length; i++) {
+  for (var i = 0; i < dataTypes.length; i++) {
+    var currentYScale = yScale[dataTypes[i]]
     for (var j = 0; j < affectedCountries.length; j++) {
       var countryAnnualSum = annualSums[dataTypes[i]][j],
           countryName = countryAnnualSum.key,
           annualData = countryAnnualSum.values;
 
-      var currentYScale = yScale[dataTypes[i]]
+      // Draw error bars
+      d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("line")
+        .data(annualSums[dataTypes[i]][j].values).enter()
+            .append("line")
+            .attr("class", "error-bar")
+            .attr("x1", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
+            .attr("y1", function(d, i) { return currentYScale(d.values["maximum"]) - padding.bottom })
+            .attr("x2", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
+            .attr("y2", function(d, i) { return currentYScale(d.values["minimum"]) - padding.bottom })
 
+      // Draw circles
       d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("circle")
-        .data(annualSums[dataTypesProper[i]][j].values)
-        .enter().append("circle")
-          .attr("cx", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
-          .attr("cy", function(d, i) { return currentYScale(d.values["average"]) - padding.bottom })
-          .attr("r", 3)
+        .data(annualSums[dataTypes[i]][j].values).enter()
+          .append("circle")
+            .attr("class", "sparkline")
+            .attr("cx", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
+            .attr("cy", function(d, i) { return currentYScale(d.values["average"]) - padding.bottom })
+            .attr("r", 3)
     }
   }
 
@@ -405,43 +425,55 @@ d3.json("data/drones.json", function(error, json) {
   }
 
   // Calculate and draw x-axes
-
-  
-
-
   //   // Define and draw x-axis
-//   var xAxis = d3.svg.axis()
-//     .scale(xScale)
-//     .orient("top")
-//     .ticks(10)
+  // var xAxis = d3.svg.axis()
+  //   .scale(xScale)
+  //   .orient("top")
+  //   .ticks(10)
 
-//   timeline.append("g")
-//     .attr("class", "axis")
-//     .attr("transform", "translate(10,2)")
-//     .call(xAxis)
+  // timeline.append("g")
+  //   .attr("class", "axis")
+  //   .attr("transform", "translate(10,2)")
+  //   .call(xAxis)
+
 })
 
 // Get the maximum value from annualSums per dataType (deaths, civilians, children)
 function getMaxOfDataType(dataType) {
   var array = []
+  // console.log("dataType: " + dataType);
   for (var i = 0; i < annualSums[dataType].length; i++) {
+    // console.log(annualSums[dataType][i]["key"]);
+    for (var j = 0; j < annualSums[dataType][i].values.length; j++) {
+      // console.log(annualSums[dataType][i].values[j]["key"] + ": " + annualSums[dataType][i].values[j].values["maximum"]);
+    }
     array.push(d3.max(annualSums[dataType][i].values, function(d) { return d.values["maximum"] }))
   }
-  console.log("dataType: " + dataType);
-  console.log(d3.max(array));
-  return d3.max(array)
+  // console.log("max: " + d3.max(array));
+  // console.log("");
+  return parseFloat(d3.max(array))
 }
 
 // Get integer from string, like it says on the box
 function getIntegerFromString(input, operation) {
-  if (input.lastIndexOf("-") == -1 && !isNaN(input)) {
-    return parseFloat(input)
-  } else if (isNaN(input)) {
+  // If blank input, return 0
+  if (input == "") {
     return 0
+  }
+  if (input.lastIndexOf("-") == -1) {
+    // If a single integer, return integer
+    if (!isNaN(input)) {
+      return parseFloat(input)
+    // If some other string without "-", return 0
+    } else {
+      return 0
+    }
   } else {
     var max = parseFloat(input.substring(input.lastIndexOf("-") + 1, input.length)),
-        min = parseFloat(input.substring(1, input.lastIndexOf("-") - 1))
+        min = parseFloat(input.substring(0, input.lastIndexOf("-")))
     if (operation == "average") {
+      // Not sure whether to round the avg...
+      return (min + max) / 2
       return Math.floor((min + max) / 2)
     }
     else if (operation == "maximum") {
