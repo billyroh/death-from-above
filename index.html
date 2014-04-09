@@ -33,6 +33,11 @@ h1, h2, p {
   margin-right: 10px;
 }
 
+.country-label {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
 .sparkline-wrapper {
   display: block;
   margin-bottom: 20px;
@@ -339,16 +344,16 @@ d3.json("data/drones.json", function(error, json) {
   // Bar chart variables
   var barWidth = ($(".sparkline").width() - 20) / (2014 - 2002),
       barHeight = 150,
-      barHeight = $(".sparkline").height() - padding.top,
+      sparklineHeight = $(".sparkline").height() - padding.top,
       yScaleDeaths = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths")])
-            .range([barHeight - padding.bottom, 0]),
+            .range([sparklineHeight - padding.bottom, 0]),
       yScaleChildren = d3.scale.linear()
             .domain([0, getMaxOfDataType("children")])
-            .range([barHeight - padding.bottom, 0]),
+            .range([sparklineHeight - padding.bottom, 0]),
       yScaleCivilians = d3.scale.linear()
             .domain([0, getMaxOfDataType("civilians")])
-            .range([barHeight - padding.bottom, 0]),
+            .range([sparklineHeight - padding.bottom, 0]),
       yScale = {
         "deaths": yScaleDeaths,
         "children": yScaleChildren,
@@ -357,7 +362,7 @@ d3.json("data/drones.json", function(error, json) {
 
   dataTypes = ["deaths", "children", "civilians"]
 
-  // Draw out each yearly sum for each year, for each data type
+  // Draw out each yearly sum for each year for each data type with error bars~
   for (var i = 0; i < dataTypes.length; i++) {
     var currentYScale = yScale[dataTypes[i]]
     for (var j = 0; j < affectedCountries.length; j++) {
@@ -370,19 +375,30 @@ d3.json("data/drones.json", function(error, json) {
         .data(annualSums[dataTypes[i]][j].values).enter()
             .append("line")
             .attr("class", "error-bar")
-            .attr("x1", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
-            .attr("y1", function(d, i) { return currentYScale(d.values["maximum"]) - padding.bottom })
-            .attr("x2", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
-            .attr("y2", function(d, i) { return currentYScale(d.values["minimum"]) - padding.bottom })
+            .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
+            .attr("y1", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
+            .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
+            .attr("y2", function(d) { return currentYScale(d.values["minimum"]) + padding.top })
+
+      // TODO: Draw error bar caps?
+      d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("line")
+        .data(annualSums[dataTypes[i]][j].values).enter()
+            .append("line")
+            .attr("class", "error-bar-cap")
+            .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * barWidth + padding.left - 20 })
+            .attr("y1", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
+            .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * barWidth + padding.left + 20 })
+            .attr("y2", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
 
       // Draw circles
       d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("circle")
         .data(annualSums[dataTypes[i]][j].values).enter()
           .append("circle")
             .attr("class", "sparkline")
-            .attr("cx", function(d, i) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
-            .attr("cy", function(d, i) { return currentYScale(d.values["average"]) - padding.bottom })
-            .attr("r", 3)
+            .attr("cx", function(d) { return (parseFloat(d.key) - 2002) * barWidth + padding.left })
+            .attr("cy", function(d) { return currentYScale(d.values["average"]) + padding.top })
+            .attr("value", function(d) { return d.values["average"] })
+            .attr("r", 2)
     }
   }
 
@@ -403,7 +419,7 @@ d3.json("data/drones.json", function(error, json) {
     xAxis = d3.svg.axis()
       .scale(xScale)
       .orient("bottom")
-      .ticks(2)
+      .ticks(0)
 
     // Define y axis
     yAxis[dataTypes[i]] = d3.svg.axis()
@@ -414,43 +430,26 @@ d3.json("data/drones.json", function(error, json) {
     // y axis
     d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#Pakistan.sparkline")
       .append("g").call(yAxis[dataTypes[i]])
-      .attr("transform", "translate(30,0)")
+      .attr("transform", "translate(" + padding.left + "," + padding.top + ")")
       .attr("class", "y axis")
 
     // x axis
     d3.selectAll(".sparkline")
       .append("g").call(xAxis)
-      .attr("transform", "translate(0," + (sparklineHeight - padding.bottom) + ")")
+      .attr("transform", "translate(0," + (sparklineHeight) + ")")
       .attr("class", "x axis")
   }
-
-  // Calculate and draw x-axes
-  //   // Define and draw x-axis
-  // var xAxis = d3.svg.axis()
-  //   .scale(xScale)
-  //   .orient("top")
-  //   .ticks(10)
-
-  // timeline.append("g")
-  //   .attr("class", "axis")
-  //   .attr("transform", "translate(10,2)")
-  //   .call(xAxis)
 
 })
 
 // Get the maximum value from annualSums per dataType (deaths, civilians, children)
 function getMaxOfDataType(dataType) {
   var array = []
-  // console.log("dataType: " + dataType);
   for (var i = 0; i < annualSums[dataType].length; i++) {
-    // console.log(annualSums[dataType][i]["key"]);
     for (var j = 0; j < annualSums[dataType][i].values.length; j++) {
-      // console.log(annualSums[dataType][i].values[j]["key"] + ": " + annualSums[dataType][i].values[j].values["maximum"]);
     }
     array.push(d3.max(annualSums[dataType][i].values, function(d) { return d.values["maximum"] }))
   }
-  // console.log("max: " + d3.max(array));
-  // console.log("");
   return parseFloat(d3.max(array))
 }
 
@@ -472,7 +471,7 @@ function getIntegerFromString(input, operation) {
     var max = parseFloat(input.substring(input.lastIndexOf("-") + 1, input.length)),
         min = parseFloat(input.substring(0, input.lastIndexOf("-")))
     if (operation == "average") {
-      // Not sure whether to round the avg...
+      // Not sure whether to round the average or not...
       return (min + max) / 2
       return Math.floor((min + max) / 2)
     }
@@ -485,54 +484,5 @@ function getIntegerFromString(input, operation) {
   }
 }
 
-// // Timeline variables
-// var sparklineWidth = $(".timeline-by-country").width(),
-//     sparklineHeight = $(".timeline-by-country").height(), 
-//     xScale,
-//     timeline,
-//     dataset,
-//     strikesOnTimeline,
-//     timelineByCountry = d3.select(".timeline-by-country2")
-//                           .append("svg")
-//                           .attr("width", sparklineWidth)
-//                           .attr("height", sparklineHeight)
-
-// // Set up timeline
-// d3.json("data/drones.json", function(error, json) {
-
-//   timelineByCountry.selectAll(".g-sector")
-//     .data(countryList)
-//     .enter().append("div")
-//       .attr("class", "g-sector")
-//       .style()
-
-
-//   var yAxisDistance = 100
-
-//   dataset = json.strike
-//   xScale = d3.time.scale()
-//           .domain([new Date(dataset[0].date), new Date(dataset[dataset.length - 1].date)])
-//           .range([padding.left, width - padding.right])
-
-//   timelineByCountry.selectAll("rect")
-//     .data(dataset)
-//     .enter()
-//     .append("rect")
-//     .attr("x", function(d) { console.log(new Date(d.date).getFullYear()); return xScale(new Date(d.date)) })
-//     .attr("y", function(d) { return sparklineHeight - d[selectedDataType] })
-//     .attr("width", 2)
-//     .attr("height", function(d) { return d[selectedDataType] })
-
-//   // Define and draw x-axis
-//   var xAxis = d3.svg.axis()
-//     .scale(xScale)
-//     .orient("top")
-//     .ticks(10)
-
-//   timeline.append("g")
-//     .attr("class", "axis")
-//     .attr("transform", "translate(10,2)")
-//     .call(xAxis)
-// })
 </script>
 <!--<script src="javascripts/map.js"></script>!-->
