@@ -276,8 +276,6 @@ Timeline by country
 // Set up
 var sparklineWidth = $(".sparkline").width(),
     sparklineHeight = $(".sparkline").height(),
-    // dataTypes = ["deaths-max", "deaths-min", "children", "civilians"],
-    // dataTypes = ["deaths_max", "deaths_min", "children", "civilians"],
     dataTypes = ["deaths", "children", "civilians"],
     affectedCountries = ["Pakistan", "Yemen", "Somalia"],
     annualSums = {
@@ -333,9 +331,6 @@ d3.json("data/drones.json", function(error, json) {
   // Bar chart variables
   var barWidth = ($(".sparkline").width() - 20) / (2014 - 2002),
       barHeight = 150,
-      // yScaleDeathsMax = d3.scale.linear()
-      //       .domain([0, getMaxOfDataType("deaths_max")])
-      //       .range([barHeight - padding.bottom, 0]),
       yScaleDeaths = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths")])
             .range([barHeight - padding.bottom, 0]),
@@ -373,8 +368,7 @@ d3.json("data/drones.json", function(error, json) {
 
   // TODO y axis
   var yAxis = {
-    "deaths_max": [],
-    "deaths_min": [],
+    "deaths": [],
     "civilians": [],
     "children": [],
   },
@@ -427,19 +421,18 @@ d3.json("data/drones.json", function(error, json) {
 //     .call(xAxis)
 })
 
+// Get the maximum value from annualSums per dataType (deaths, civilians, children)
 function getMaxOfDataType(dataType) {
   var array = []
   for (var i = 0; i < annualSums[dataType].length; i++) {
-    // for (var j = 0; j < annualSums[dataType][i].length; j++) {
-    //   console.log("hi");
-    //   console.log(annualSums["deaths_max"][i].values[j].values);
-    //   test.push(annualSums["deaths_max"][i].values[j].values)
-    // }
     array.push(d3.max(annualSums[dataType][i].values, function(d) { return d.values["maximum"] }))
   }
+  console.log("dataType: " + dataType);
+  console.log(d3.max(array));
   return d3.max(array)
 }
 
+// Get integer from string, like it says on the box
 function getIntegerFromString(input, operation) {
   if (input.lastIndexOf("-") == -1 && !isNaN(input)) {
     return parseFloat(input)
@@ -459,39 +452,6 @@ function getIntegerFromString(input, operation) {
     }
   }
 }
-
-// function getAverageFromString(input) {
-//   if (input.lastIndexOf("-") == -1 && !isNaN(input)) {
-//     return parseFloat(input)
-//   } if else (isNaN(input)) {
-//     return 0
-//   } else {
-//     var max = parseFloat(input.substring(input.lastIndexOf("-") + 1, input.length)),
-//         min = parseFloat(input.substring(1, input.lastIndexOf("-") - 1))
-//     return Math.floor((min + max) / 2)
-//   }
-// }
-
-// function getMaximumFromString(input) {
-//   if (input.lastIndexOf("-") == -1 && !isNaN(input)) {
-//     return parseFloat(input)
-//   } if else (isNaN(input)) {
-//     return 0
-//   } else {
-//     return parseFloat(input.substring(input.lastIndexOf("-") + 1, input.length))
-//   }
-// }
-
-// function getMinimumFromString(input) {
-//   if (input.lastIndexOf("-") == -1 && !isNaN(input)) {
-//     return parseFloat(input)
-//   } if else (isNaN(input)) {
-//     return 0
-//   } else {
-//     return parseFloat(input.substring(1, input.lastIndexOf("-") - 1))
-//   }
-// }
-
 
 // // Timeline variables
 // var sparklineWidth = $(".timeline-by-country").width(),
