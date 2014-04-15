@@ -1,222 +1,226 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
+<head>
+  <title>Death from Above</title>
+  <style>
 
-body {
-  font-family: Georgia, "Times New Roman", serif;
-  color: #454545;
-  margin: 0 auto;
-  padding: 60px;
-  max-width: 945px;
-  min-width: 320px;
-}
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      color: #454545;
+      margin: 0 auto;
+      padding: 20px;
+      max-width: 945px;
+      min-width: 320px;
+    }
 
-h1, h2 {
-  font-weight: 300;
-}
+    h1, h2 {
+      font-weight: 300;
+    }
 
-h1, h2, p {
-}
+    h1, h2, p {
+    }
 
-.section {
-  display: block;
-}
+    .section {
+      display: block;
+    }
 
+    /* Sparklines */
 
+    .country-label, .sparkline {
+      width: 300px;
+      float: left;
+      margin-right: 20px;
+    }
 
-/* Sparklines */
+    .country-label {
+      font-size: 12px;
+      text-transform: uppercase;
+    }
 
-.country-label, .sparkline {
-  width: 300px;
-  float: left;
-  margin-right: 20px;
-}
+    .country-label-wrapper {
+      display: block;
+    }
 
-.country-label {
-  font-size: 12px;
-  text-transform: uppercase;
-}
+    .sparkline-wrapper {
+      display: block;
+      margin-bottom: 20px;
+      height: 200px;
+    }
 
-.country-label-wrapper {
-  display: block;
-  /*width: 940px;
-  height: 50px;*/
-}
+    .sparkline {
+      height: 150px;
+      display: block;
+    }
 
-.sparkline-wrapper {
-  display: block;
-  margin-bottom: 20px;
-  height: 200px;
-}
+    .sparkline:last-child {
+      margin-right: 0px;
+    }
 
-.sparkline {
-  height: 150px;
-  display: block;
-}
+    .data-type-label {
+      margin-bottom: 10px;
+    }
 
-.sparkline:last-child {
-  margin-right: 0px;
-}
+    /* Map Stuff */
 
-.data-type-label {
-  margin-bottom: 10px;
-}
+    .map {
+      width: 100%;
+      height: 600px;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+    }
 
-/* Map Stuff */
+    .background {
+      fill: none;
+      pointer-events: all;
+    }
 
-.map {
-  width: 100%;
-  height: 600px;
-  display: block;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-}
+    .feature {
+      fill: #ccc;
+      /*cursor: pointer;*/
+    }
 
-.background {
-  fill: none;
-  pointer-events: all;
-}
+    circle.sparkline, circle.timeline {
+      fill: #fff;
+      stroke: #000;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
-.feature {
-  fill: #ccc;
-  /*cursor: pointer;*/
-}
+    .tooltip {
+      width: 300px;
+      height: 300px;
+      background-color: red;
+    }
 
-circle.sparkline {
-  fill: #fff;
-  stroke: #000;
-  stroke-width: 2px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+    circle.strike, circle.timeline-circle {
+      fill: rgb(200, 18, 18);
+      opacity: 0.2;
+      cursor: pointer;
+      -webkit-transition: all 150ms;
+      transition: all 150ms;
+    }
 
-.tooltip {
-  width: 300px;
-  height: 300px;
-  background-color: red;
-}
+    .feature.active {
+      
+    }
 
-circle.strike, circle.timeline-circle {
-  fill: rgb(200, 18, 18);
-  opacity: 0.2;
-  cursor: pointer;
-  -webkit-transition: all 150ms;
-  transition: all 150ms;
-}
+    .mesh {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 0.5px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
-.feature.active {
-  
-}
+    .country-name {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      fill: #000;
+      opacity: 0.3;
+      margin-left: -10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: default;
+    }
 
-.mesh {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 0.5px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+    /* Timeline stuff */ 
 
-.country-name {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  fill: #000;
-  opacity: 0.3;
-  margin-left: -10px;
-  font-size: 11px;
-  text-transform: uppercase;
-  cursor: default;
-}
+    .timeline-old {
+      width: 100%;
+      height: 30px;
+      margin-top: 10px;
+    }
 
-/* Timeline stuff */ 
+    .timeline {
+      width: 100%;
+      height: 150px;
+    }
 
-.timeline {
-  width: 100%;
-  height: 30px;
-  margin-top: 10px;
-}
+    .timeline-by-country {
+      width: 100%;
+      height: 200px;
+    }
 
-.timeline-by-country {
-  width: 100%;
-  height: 200px;
-}
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: black;
-  shape-rendering: crispEdges;
-}
+    .y.axis path {
+      stroke: none;
+    }
 
-.y.axis path {
-  stroke: none;
-}
+    .x.axis path {
+      /*stroke: none;*/
+    }
 
-.x.axis path {
-  /*stroke: none;*/
-}
+    .axis text, text.axis {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      cursor: default;
+    }
 
-.axis text, text.axis {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 11px;
-  cursor: default;
-}
-
-.axis line {
-  stroke: #777;
-  stroke-dasharray: 2,2;
-}
-
-
-circle.not-applicable {
-  opacity: 0;
-  /*display: none;*/
-}
-
-line {
-  stroke: #000;
-}
-
-line.sparkline {
-  stroke: #000;
-}
+    .axis line {
+      stroke: #777;
+      stroke-dasharray: 2,2;
+    }
 
 
-/* Tooltip shit */
+    circle.not-applicable {
+      opacity: 0;
+      /*display: none;*/
+    }
 
-.d3-tip {
-  line-height: 1;
-  font-weight: bold;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 2px;
-}
+    line {
+      stroke: #000;
+    }
 
-/* Creates a small triangle extender for the tooltip */
-.d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
-  content: "\25BC";
-  position: absolute;
-  text-align: center;
-}
+    line.sparkline {
+      stroke: #000;
+    }
 
-/* Style northward tooltips differently */
-.d3-tip.n:after {
-  margin: -1px 0 0 0;
-  top: 100%;
-  left: 0;
-}
 
-</style>
+    /* Tooltip shit */
+
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      position: absolute;
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
+
+  </style>
+</head>
 <body>
 <div class="text" id="intro">
   <h1>Death from Above</h1>
   <p>Mapping deaths from drone strikes.</p>
 </div>
-<div class="section" id="timeline-section">
+<div class="section" id="annual-sums-by-country">
   <h2>Timelines</h2>
   <p>Each circle corresponds to a single strike.</p>
   <div class="country-label-wrapper">
@@ -242,6 +246,22 @@ line.sparkline {
     <svg class="sparkline" id="Yemen"></svg>
     <svg class="sparkline" id="Somalia"></svg>
   </div>
+</div>
+<div class="section" id="timeline-by-country">
+  <div class="timeline-wrapper">
+    <div class="timeline-country-label" id="Pakistan">Pakistan</div>
+    <svg class="timeline" id="Pakistan"></svg>
+  </div>
+  <div class="timeline-wrapper">
+    <div class="timeline-country-label" id="Yemen">Yemen</div>
+    <svg class="timeline" id="Yemen"></svg>
+  </div>
+  <div class="timeline-wrapper">
+    <div class="timeline-country-label" id="Somalia">Somalia</div>
+    <svg class="timeline" id="Somalia"></svg>
+  </div>
+</div>
+
 <!-- </div>
 <div class="data-type-selector-wrapper">
   <select class="data-type-selector">
@@ -361,8 +381,8 @@ d3.json("data/drones.json", function(error, json) {
     }
   }
 
-  // Bar chart variables
-  var barWidth = ($(".sparkline").width()) / (2014 - 2002),
+  // Chart variables
+  var circleSpacing = ($(".sparkline").width()) / (2014 - 2002),
       sparklineHeight = $(".sparkline").height() - padding.top,
       yScaleDeaths = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths")])
@@ -378,8 +398,6 @@ d3.json("data/drones.json", function(error, json) {
         "children": yScaleChildren,
         "civilians": yScaleCivilians
       }
-
-  dataTypes = ["deaths", "children", "civilians"]
 
   // y axis
   var yAxis = {
@@ -455,9 +473,9 @@ d3.json("data/drones.json", function(error, json) {
         .data(annualSums[dataTypes[i]][j].values).enter()
             .append("line")
             .attr("class", "error-bar")
-            .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * barWidth + 3 })
+            .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
             .attr("y1", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
-            .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * barWidth + 3 })
+            .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
             .attr("y2", function(d) { return currentYScale(d.values["minimum"]) + padding.top })
 
       // TODO: Draw error bar caps?
@@ -465,9 +483,9 @@ d3.json("data/drones.json", function(error, json) {
         .data(annualSums[dataTypes[i]][j].values).enter()
             .append("line")
             .attr("class", "error-bar-cap")
-            .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * barWidth - 17 })
+            .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing - 17 })
             .attr("y1", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
-            .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * barWidth + 17 })
+            .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 17 })
             .attr("y2", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
 
       // Draw circles
@@ -475,7 +493,7 @@ d3.json("data/drones.json", function(error, json) {
         .data(annualSums[dataTypes[i]][j].values).enter()
           .append("circle")
             .attr("class", "sparkline")
-            .attr("cx", function(d) { return (parseFloat(d.key) - 2002) * barWidth + 3 })
+            .attr("cx", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
             .attr("cy", function(d) { return currentYScale(d.values["average"]) + padding.top })
             .attr("r", 2)
             .attr("value", function(d) { return d.values["average"] })
@@ -526,6 +544,73 @@ function getIntegerFromString(input, operation) {
     }
   }
 }
+
+/* 
+      Timeline by country
+*/
+
+var padding = {
+      "top": 20,
+      "right": 20,
+      "bottom": 20,
+      "left": 40
+    },
+    timelineWidth = $(".timeline").width(),
+    timelineHeight = $(".timeline").height()
+
+d3.json("data/drones.json", function(error, json) {
+  var dataset = json.strike,
+      yScale,
+      xScale,
+      xAxis
+
+  xScale = d3.time.scale()
+            .domain([new Date(dataset[0].date), new Date(dataset[dataset.length - 1].date)])
+            .range([0, timelineWidth])
+
+  yScale = d3.time.scale()
+            .domain([0, 300])
+            .range([0, timelineHeight])
+
+  for (var i = 0; i < affectedCountries.length; i++) {
+    var currentYScale,
+        currentTimeline = d3.select(".timeline#" + affectedCountries[i])
+
+    // Draw x axes
+    xAxis = d3.svg.axis()
+      .scale(xScale)
+      .orient("bottom")
+      .ticks(10)
+
+    currentTimeline.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + (timelineHeight - padding.bottom) + ")")
+      .call(xAxis)
+
+    // Draw y axes
+    yAxis = d3.svg.axis()
+      .scale(yScale)
+      .orient("left")
+      .ticks(5)
+
+    currentTimeline.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0,0)")
+      .call(yAxis)
+
+    // Draw circles
+    currentTimeline.selectAll("circle")
+      .data(dataset).enter()
+        .append("circle")
+        .attr("class", "timeline")
+        .attr("cx", function(d) { if (d.country != affectedCountries[i]) { return -100 } return xScale(new Date(d.date)) })
+        .attr("cy", function(d) { if (d.country != affectedCountries[i]) { return -100 } return (timelineHeight - padding.bottom - getIntegerFromString(d.deaths, "average")) })
+        .attr("r", function(d) { return 2 })
+
+    
+  }
+
+})
 
 </script>
 <!--<script src="javascripts/map.js"></script>!-->
