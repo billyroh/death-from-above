@@ -27,12 +27,9 @@ h1, h2, p {
 /* Sparklines */
 
 .country-label, .sparkline {
-  width: 300px;
+  /*width: 300px;
   float: left;
-  margin-right: 20px;
-}
-
-.sparkline.full {
+  margin-right: 20px;*/
   width: 100%;
 }
 
@@ -48,11 +45,11 @@ h1, h2, p {
 .sparkline-wrapper {
   display: block;
   margin-bottom: 20px;
-  height: 200px;
+  /*height: 200px;*/
 }
 
 .sparkline, .sparkline-full {
-  height: 150px;
+  height: 300px;
   display: block;
 }
 
@@ -137,7 +134,7 @@ circle.strike, circle.timeline-circle {
 
 .timeline {
   width: 100%;
-  height: 150px;
+  height: 300px;
   /*width: 300px;
   height: 600px;*/
 }
@@ -276,21 +273,30 @@ svg.timeline-map {
 <div class="section" id="annual-sums-by-country">
   <h2>Timelines</h2>
   <p>Each circle corresponds to a single strike.</p>
-  <div class="country-label-wrapper">
+  <!-- <div class="country-label-wrapper">
     <div class="country-label" id="Pakistan">Pakistan</div>
     <div class="country-label" id="Yemen">Yemen</div>
     <div class="country-label" id="Somalia">Somalia</div>
+  </div> -->
+  <div class="sparkline-wrapper">
+    <div class="data-type-label">Overall Death Estimate</div>
+    <svg class="sparkline" id="deaths"></svg>
   </div>
   <div class="sparkline-wrapper">
-    <svg class="sparkline-full"></svg>
+    <div class="data-type-label">Civilian Death Estimate</div>
+    <svg class="sparkline" id="civilians"></svg>
   </div>
-  <div class="sparkline-wrapper" id="deaths">
+  <div class="sparkline-wrapper">
+    <div class="data-type-label">Child Death Estimate</div>
+    <svg class="sparkline" id="children"></svg>
+  </div>
+  <!-- <div class="sparkline-wrapper" id="deaths">
     <div class="data-type-label">Overall Death Estimate</div>
     <svg class="sparkline" id="Pakistan"></svg>
     <svg class="sparkline" id="Yemen"></svg>
     <svg class="sparkline" id="Somalia"></svg>
-  </div>
-  <div class="sparkline-wrapper" id="civilians">
+  </div> -->
+  <!-- <div class="sparkline-wrapper" id="civilians">
     <div class="data-type-label">Civilian Death Estimate</div>
     <svg class="sparkline" id="Pakistan"></svg>
     <svg class="sparkline" id="Yemen"></svg>
@@ -301,7 +307,7 @@ svg.timeline-map {
     <svg class="sparkline" id="Pakistan"></svg>
     <svg class="sparkline" id="Yemen"></svg>
     <svg class="sparkline" id="Somalia"></svg>
-  </div>
+  </div> -->
 </div>
 <div class="section" id="timeline-by-country">
   <div class="timeline-wrapper">
@@ -440,7 +446,7 @@ d3.json("data/drones.json", function(error, json) {
   }
 
   // Chart variables
-  var circleSpacing = ($(".sparkline").width()) / (2014 - 2002),
+  var circleSpacing = ($(".sparkline").width() - padding.right + 13) / (2014 - 2002),
       sparklineHeight = $(".sparkline").height() - padding.top,
       yScaleDeaths = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths")])
@@ -455,6 +461,16 @@ d3.json("data/drones.json", function(error, json) {
         "deaths": yScaleDeaths,
         "children": yScaleChildren,
         "civilians": yScaleCivilians
+      },
+      selector = {
+        "deaths": d3.select(".sparkline#deaths"),
+        "children": d3.select(".sparkline#children"),
+        "civilians": d3.select(".sparkline#civilians")
+      }
+      sparklineLineSelector = {
+        "deaths": selector["deaths"].selectAll("line"),
+        "children": selector["children"].selectAll("line"),
+        "civilians": selector["civilians"].selectAll("line")
       }
 
   // y axis
@@ -474,22 +490,22 @@ d3.json("data/drones.json", function(error, json) {
         // Define y axis
         yAxis[dataTypes[i]] = d3.svg.axis()
           .scale(yScale[dataTypes[i]])
-          .orient("right")
+          .orient("left")
           .ticks(5)
           .tickSize(sparklineWidth)
 
-        var selector = d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#" + affectedCountries[j] + ".sparkline")
+        var currentSelector = selector[dataTypes[i]]
           .append("g").call(yAxis[dataTypes[i]])
         
-        selector.attr("transform", "translate(" + (0) + "," + padding.top + ")")
+        currentSelector.attr("transform", "translate(" + (sparklineWidth) + "," + padding.top + ")")
           .attr("class", "y axis")
 
-        selector.selectAll("text")
+        currentSelector.selectAll("text")
           .attr("x", 0)
           .attr("text-align", "right")
 
         if (j != affectedCountries.length - 1) {
-          selector.selectAll("text")
+          currentSelector.selectAll("text")
             .attr("display", "none")
         }
       }
@@ -518,63 +534,33 @@ d3.json("data/drones.json", function(error, json) {
     .attr("y", sparklineHeight + padding.bottom - 3)
     .text("2014")
 
-  // TODO put each country annual sum data into graph, separate by dataType
-  var lineSelector = d3.select(".sparkline-full").selectAll("line"),
-      circleSelector = d3.select(".sparkline-full").selectAll("circle")
-
-  for (var i = 0; i < affectedCountries.length; i++) {
-    console.log(i);
-    var currentYScale = yScale["deaths"]
-
-    // Draw error bars
-    lineSelector
-      .data(annualSums["deaths"][i].values).enter()
-          .append("line")
-          .attr("class", "error-bar")
-          .attr("id", affectedCountries[i])
-          .attr("x1", function(d) { console.log(d); return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
-          .attr("y1", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
-          .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
-          .attr("y2", function(d) { return currentYScale(d.values["minimum"]) + padding.top })
-
-    // Draw circles
-    circleSelector
-      .data(annualSums["deaths"][i].values).enter()
-        .append("circle")
-          .attr("class", "sparkline")
-          .attr("id", affectedCountries[i])
-          .attr("cx", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
-          .attr("cy", function(d) { return currentYScale(d.values["average"]) + padding.top })
-          .attr("r", 2)
-          .attr("value", function(d) { return d.values["average"] })
-          .attr("year", function(d) { return d.key })
-          .on("mouseover", function(d) { displayYear(d.key) })
-          .on("mouseout", function(d) { resetYear() })
-  }
-
-  // Draw out each yearly sum for each year for each data type with error bars~
-  for (var i = 0; i < dataTypes.length; i++) {
-    var currentYScale = yScale[dataTypes[i]]
-    for (var j = 0; j < affectedCountries.length; j++) {
-      var countryAnnualSum = annualSums[dataTypes[i]][j],
-          countryName = countryAnnualSum.key,
-          annualData = countryAnnualSum.values;
+  // Put each country annual sum data into graph, separate by dataType
+  for (var dataTypesIndex = 0; dataTypesIndex < dataTypes.length; dataTypesIndex++) {
+    var lineSelector = d3.select(".sparkline#" + dataTypes[dataTypesIndex]).selectAll("line"),
+        circleSelector = d3.select(".sparkline#" + dataTypes[dataTypesIndex]).selectAll("circle"),
+        currentYScale = yScale[dataTypes[dataTypesIndex]]
+    for (var i = 0; i < affectedCountries.length; i++) {
+      console.log(lineSelector);
+      console.log(circleSelector);
+      console.log("");
 
       // Draw error bars
-      d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("line")
-        .data(annualSums[dataTypes[i]][j].values).enter()
+      sparklineLineSelector[dataTypes[dataTypesIndex]]
+        .data(annualSums[dataTypes[dataTypesIndex]][i].values).enter()
             .append("line")
             .attr("class", "error-bar")
-            .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
-            .attr("y1", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
+            .attr("id", affectedCountries[i])
+            .attr("x1", function(d) { console.log(d); return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
+            .attr("y1", function(d) { console.log(d); return currentYScale(d.values["maximum"]) + padding.top })
             .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
             .attr("y2", function(d) { return currentYScale(d.values["minimum"]) + padding.top })
 
       // Draw circles
-      d3.select("#" + dataTypes[i] + ".sparkline-wrapper > " + "#" + countryName + ".sparkline").selectAll("circle")
-        .data(annualSums[dataTypes[i]][j].values).enter()
+      circleSelector
+        .data(annualSums[dataTypes[dataTypesIndex]][i].values).enter()
           .append("circle")
             .attr("class", "sparkline")
+            .attr("id", affectedCountries[i])
             .attr("cx", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
             .attr("cy", function(d) { return currentYScale(d.values["average"]) + padding.top })
             .attr("r", 2)
@@ -582,7 +568,6 @@ d3.json("data/drones.json", function(error, json) {
             .attr("year", function(d) { return d.key })
             .on("mouseover", function(d) { displayYear(d.key) })
             .on("mouseout", function(d) { resetYear() })
-
     }
   }
 

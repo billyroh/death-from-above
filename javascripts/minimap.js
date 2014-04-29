@@ -1,5 +1,5 @@
-var width = 150,
-    height = 150;
+var width = 300,
+    height = 300;
 
 var projection = d3.geo.mercator()
     .center([79.1, 22])
@@ -42,9 +42,6 @@ d3.json("data/pakistan.json", function(error, country) {
       .text(function(d) { return d.properties.name; });
 });
 
-var width = 150,
-    height = 150;
-
 var projectionYemen = d3.geo.mercator()
     .center([55, 9.25])
     .scale(660)
@@ -86,9 +83,6 @@ d3.json("data/yemen.json", function(error, country) {
       .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
       .text(function(d) { return d.properties.name; });
 });
-
-var width = 150,
-    height = 150;
 
 var projectionSomalia = d3.geo.mercator()
     .center([54.2, -2.5])
