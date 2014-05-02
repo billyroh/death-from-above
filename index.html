@@ -362,6 +362,7 @@ svg.timeline-map {
 <script src="javascripts/d3.geo.projection.v0.min.js"></script>
 <script src="javascripts/jquery-1.11.0.min.js"></script>
 <script src="javascripts/d3.tip.v0.6.3.js"></script>
+<script src="javascripts/minimap.js"></script>
 <script>
 
 /*
@@ -664,6 +665,215 @@ var padding = {
     timelineWidth = $(".timeline").width() - 300,
     timelineHeight = $(".timeline").height()
 
+
+/*
+      Draw mini-maps
+*/
+
+var width = 300,
+    height = 300;
+
+var projectionPakistan = d3.geo.mercator()
+    .center([79.1, 22])
+    .scale(900)
+    .translate([width, height]);
+
+var pathPakistan = d3.geo.path()
+    .projection(projectionPakistan)
+    .pointRadius(2);
+
+var projection = {
+  "Pakistan": d3.geo.mercator()
+    .center([79.1, 22])
+    .scale(900)
+    .translate([width, height]),
+  "Yemen": d3.geo.mercator()
+    .center([55, 9.25])
+    .scale(1320)
+    .translate([width, height]),
+  "Somalia":d3.geo.mercator()
+    .center([54.2, -2.5])
+    .scale(1100)
+    .translate([width, height])
+}
+
+var path = {
+  "Pakistan": d3.geo.path()
+    .projection(projection["Pakistan"])
+    .pointRadius(2),
+  "Yemen": d3.geo.path()
+    .projection(projection["Yemen"])
+    .pointRadius(2),
+  "Somalia": d3.geo.path()
+    .projection(projection["Somalia"])
+    .pointRadius(2)
+}
+
+// TODO why won't this work????????!??!?!?!?!?!?!
+for (var i = 0; i < affectedCountries.length; i++) {
+  var currentSelector = d3.select(".timeline-map#" + affectedCountries[i])
+        .attr("width", width)
+        .attr("height", height),
+      currentProjection = projection[affectedCountries[i]],
+      currentPathName = "data/" + affectedCountries[i].toLowerCase() + ".json"
+
+    console.log("");
+    console.log(affectedCountries[i]);
+  d3.json("data/Pakistan.json", function(error, country) {
+  // d3.json(currentPathName, function(error, country) {
+    currentSelector.selectAll(".subunit")
+        .data(topojson.feature(country, country.objects.subunits).features)
+      .enter().append("path")
+        .attr("class", function(d) {console.log(d); return "subunit " + d.id; })
+        .attr("d", path[affectedCountries[i]]);
+
+    currentSelector.append("path")
+        .datum(topojson.feature(country, country.objects.subunits))
+        .attr("d", path[affectedCountries[i]])
+        .attr("class", "hello")
+
+    currentSelector.append("path")
+        .datum(topojson.feature(country, country.objects.places))
+        .attr("d", path[affectedCountries[i]])
+        .attr("class", "place");
+
+    currentSelector.selectAll(".place-label")
+        .data(topojson.feature(country, country.objects.places).features)
+      .enter().append("text")
+        .attr("class", "place-label")
+        .attr("transform", function(d) { return "translate(" + currentProjection(d.geometry.coordinates) + ")"; })
+        .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+        .attr("dy", ".35em")
+        .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+        .text(function(d) { return d.properties.name; });
+  });
+}
+
+// var pakistan = d3.select(".timeline-map#Pakistan")
+//     .attr("width", width)
+//     .attr("height", height);
+
+// console.log("");
+// console.log("working version");
+// d3.json("data/pakistan.json", function(error, country) {
+//   pakistan.selectAll(".subunit")
+//       .data(topojson.feature(country, country.objects.subunits).features)
+//     .enter().append("path")
+//       .attr("class", function(d) { console.log(d); return "subunit " + d.id; })
+//       .attr("d", pathPakistan);
+
+//   pakistan.append("path")
+//       .datum(topojson.feature(country, country.objects.subunits))
+//       .attr("d", pathPakistan)
+//       .attr("class", "hello")
+
+//   pakistan.append("path")
+//       .datum(topojson.feature(country, country.objects.places))
+//       .attr("d", pathPakistan)
+//       .attr("class", "place");
+
+//   pakistan.selectAll(".place-label")
+//       .data(topojson.feature(country, country.objects.places).features)
+//     .enter().append("text")
+//       .attr("class", "place-label")
+//       .attr("transform", function(d) { return "translate(" + projectionPakistan(d.geometry.coordinates) + ")"; })
+//       .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+//       .attr("dy", ".35em")
+//       .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+//       .text(function(d) { return d.properties.name; });
+// });
+
+var projectionYemen = d3.geo.mercator()
+    .center([55, 9.25])
+    .scale(1320)
+    .translate([width, height]);
+
+var pathYemen = d3.geo.path()
+    .projection(projectionYemen)
+    .pointRadius(2);
+
+var yemen = d3.select(".timeline-map#Yemen")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("data/yemen.json", function(error, country) {
+  yemen.selectAll(".subunit")
+      .data(topojson.feature(country, country.objects.subunits).features)
+    .enter().append("path")
+      .attr("class", function(d) { return "subunit " + d.id; })
+      .attr("d", pathYemen)
+      // .attr("transform", "translate(200, -200)")
+
+  yemen.append("path")
+      .datum(topojson.feature(country, country.objects.subunits))
+      .attr("d", pathYemen)
+      .attr("class", "hello")
+
+  yemen.append("path")
+      .datum(topojson.feature(country, country.objects.places))
+      .attr("d", pathYemen)
+      .attr("class", "place");
+
+  yemen.selectAll(".place-label")
+      .data(topojson.feature(country, country.objects.places).features)
+    .enter().append("text")
+      .attr("class", "place-label")
+      .attr("transform", function(d) { return "translate(" + projectionYemen(d.geometry.coordinates) + ")"; })
+      .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+      .attr("dy", ".35em")
+      .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+      .text(function(d) { return d.properties.name; });
+});
+
+var projectionSomalia = d3.geo.mercator()
+    .center([54.2, -2.5])
+    .scale(1100)
+    .translate([width, height]);
+
+var pathSomalia = d3.geo.path()
+    .projection(projectionSomalia)
+    .pointRadius(2);
+
+var somalia = d3.select(".timeline-map#Somalia")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("data/somalia.json", function(error, country) {
+  somalia.selectAll(".subunit")
+      .data(topojson.feature(country, country.objects.subunits).features)
+    .enter().append("path")
+      .attr("class", function(d) { return "subunit " + d.id; })
+      .attr("d", pathSomalia)
+
+  somalia.append("path")
+      .datum(topojson.feature(country, country.objects.subunits))
+      .attr("d", pathSomalia)
+      .attr("class", "hello")
+
+  somalia.append("path")
+      .datum(topojson.feature(country, country.objects.places))
+      .attr("d", pathSomalia)
+      .attr("class", "place");
+
+  somalia.selectAll(".place-label")
+      .data(topojson.feature(country, country.objects.places).features)
+    .enter().append("text")
+      .attr("class", "place-label")
+      .attr("transform", function(d) { return "translate(" + pathSomalia(d.geometry.coordinates) + ")"; })
+      .attr("x", 71)
+      .attr("dy", "10.9em")
+      .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+      .text(function(d) { return d.properties.name; });
+});
+
+
+/*
+
+    Draw Timelines
+
+*/
+
+
 d3.json("data/drones.json", function(error, json) {
   var dataset = json.strike,
       yScale,
@@ -728,20 +938,28 @@ d3.json("data/drones.json", function(error, json) {
         .append("line")
         .attr("class", "error-bar")
         .attr("id", function(d) { return d.country })
-        .attr("x1", function(d) { if (d.country != affectedCountries[i]) { return -100 } return xScale(new Date(d.date)) })
-        .attr("y1", function(d) { if (d.country != affectedCountries[i]) { return -100 } return (currentYScale(getIntegerFromString(d.deaths, "maximum"))) })
-        .attr("x2", function(d) { if (d.country != affectedCountries[i]) { return -100 } return xScale(new Date(d.date)) })
-        .attr("y2", function(d) { if (d.country != affectedCountries[i]) { return -100 } return (currentYScale(getIntegerFromString(d.deaths, "minimum"))) })
+        .attr("visibility", function(d) { if (d.country != affectedCountries[i]) { return "hidden" } else { return "ok" } })
+        .attr("x1", function(d) { return xScale(new Date(d.date)) })
+        .attr("y1", function(d) { return (currentYScale(getIntegerFromString(d.deaths, "maximum"))) })
+        .attr("x2", function(d) { return xScale(new Date(d.date)) })
+        .attr("y2", function(d) { return (currentYScale(getIntegerFromString(d.deaths, "minimum"))) })
 
     // Draw circles
     currentTimeline.selectAll("circle")
       .data(dataset).enter()
         .append("circle")
         .attr("class", "timeline")
-        // .attr("id", function(d) { return d.country }) // TODO this causes an error with Somalia for some reason
-        .attr("cx", function(d) { if (d.country != affectedCountries[i]) { return -100 } return xScale(new Date(d.date)) })
-        .attr("cy", function(d) { if (d.country != affectedCountries[i]) { return -100 } return (currentYScale(getIntegerFromString(d.deaths, "average"))) })
+        .attr("visibility", function(d) { if (d.country != affectedCountries[i]) { return "hidden" } else { return "ok" } })
+        .attr("id", function(d) { return d.country })
+        .attr("cx", function(d) { return xScale(new Date(d.date)) })
+        .attr("cy", function(d) { return (currentYScale(getIntegerFromString(d.deaths, "average"))) })
         .attr("r", function(d) { return 2 })
+
+    // current
+
+    // Get rid of hidden strikes
+    currentTimeline.selectAll("circle[visibility = hidden]").remove()
+    currentTimeline.selectAll("line[visibility = hidden]").remove()
   }
 
 })
@@ -754,5 +972,4 @@ Practice
 */
 
 </script>
-<script src="javascripts/minimap.js"></script>
 <!--<script src="javascripts/map.js"></script>!-->
