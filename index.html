@@ -180,7 +180,7 @@ circle.strike, circle.timeline-circle {
 }
 
 .timeline {
-  width: 100%;
+  width: 600px;
   height: 300px;
   /*width: 300px;
   height: 600px;*/
@@ -662,7 +662,7 @@ var padding = {
       "bottom": 20,
       "left": 20
     },
-    timelineWidth = $(".timeline").width() - 300,
+    timelineWidth = $(".timeline").width(),
     timelineHeight = $(".timeline").height()
 
 
@@ -672,15 +672,6 @@ var padding = {
 
 var width = 300,
     height = 300;
-
-var projectionPakistan = d3.geo.mercator()
-    .center([79.1, 22])
-    .scale(900)
-    .translate([width, height]);
-
-var pathPakistan = d3.geo.path()
-    .projection(projectionPakistan)
-    .pointRadius(2);
 
 var projection = {
   "Pakistan": d3.geo.mercator()
@@ -709,79 +700,102 @@ var path = {
     .pointRadius(2)
 }
 
-// TODO why won't this work????????!??!?!?!?!?!?!
-for (var i = 0; i < affectedCountries.length; i++) {
-  var currentSelector = d3.select(".timeline-map#" + affectedCountries[i])
-        .attr("width", width)
-        .attr("height", height),
-      currentProjection = projection[affectedCountries[i]],
-      currentPathName = "data/" + affectedCountries[i].toLowerCase() + ".json"
+// // TODO why won't this work????????!??!?!?!?!?!?!
+// for (var i = 0; i < affectedCountries.length; i++) {
+//   var currentSelector = d3.select(".timeline-map#" + affectedCountries[i])
+//         .attr("width", width)
+//         .attr("height", height),
+//       currentProjection = projection[affectedCountries[i]],
+//       currentPathName = "data/" + affectedCountries[i].toLowerCase() + ".json"
 
-    console.log("");
-    console.log(affectedCountries[i]);
-  d3.json("data/Pakistan.json", function(error, country) {
-  // d3.json(currentPathName, function(error, country) {
-    currentSelector.selectAll(".subunit")
-        .data(topojson.feature(country, country.objects.subunits).features)
-      .enter().append("path")
-        .attr("class", function(d) {console.log(d); return "subunit " + d.id; })
-        .attr("d", path[affectedCountries[i]]);
+//     console.log("");
+//     console.log(affectedCountries[i]);
+//     console.log(currentPathName);
+//     console.log(currentSelector.selectAll(".subunit"));
+//   // d3.json("data/pakistan.json", function(error, country) {
+//   d3.json(("" + currentPathName), function(error, country) {
+//     currentSelector.selectAll(".subunit")
+//         .data(topojson.feature(country, country.objects.subunits).features)
+//       .enter().append("path")
+//         .attr("class", function(d) {console.log(d); return "subunit " + d.id; })
+//         .attr("d", path[affectedCountries[i]]);
 
-    currentSelector.append("path")
-        .datum(topojson.feature(country, country.objects.subunits))
-        .attr("d", path[affectedCountries[i]])
-        .attr("class", "hello")
+//     currentSelector.append("path")
+//         .datum(topojson.feature(country, country.objects.subunits))
+//         .attr("d", path[affectedCountries[i]])
+//         .attr("class", "hello")
 
-    currentSelector.append("path")
-        .datum(topojson.feature(country, country.objects.places))
-        .attr("d", path[affectedCountries[i]])
-        .attr("class", "place");
+//     currentSelector.append("path")
+//         .datum(topojson.feature(country, country.objects.places))
+//         .attr("d", path[affectedCountries[i]])
+//         .attr("class", "place");
 
-    currentSelector.selectAll(".place-label")
-        .data(topojson.feature(country, country.objects.places).features)
-      .enter().append("text")
-        .attr("class", "place-label")
-        .attr("transform", function(d) { return "translate(" + currentProjection(d.geometry.coordinates) + ")"; })
-        .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
-        .attr("dy", ".35em")
-        .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
-        .text(function(d) { return d.properties.name; });
-  });
-}
+//     currentSelector.selectAll(".place-label")
+//         .data(topojson.feature(country, country.objects.places).features)
+//       .enter().append("text")
+//         .attr("class", "place-label")
+//         .attr("transform", function(d) { return "translate(" + currentProjection(d.geometry.coordinates) + ")"; })
+//         .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+//         .attr("dy", ".35em")
+//         .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+//         .text(function(d) { return d.properties.name; });
+//   });
+// }
 
-// var pakistan = d3.select(".timeline-map#Pakistan")
-//     .attr("width", width)
-//     .attr("height", height);
+var pakistan = d3.select(".timeline-map#Pakistan")
+    .attr("width", width)
+    .attr("height", height);
 
-// console.log("");
-// console.log("working version");
-// d3.json("data/pakistan.json", function(error, country) {
-//   pakistan.selectAll(".subunit")
-//       .data(topojson.feature(country, country.objects.subunits).features)
-//     .enter().append("path")
-//       .attr("class", function(d) { console.log(d); return "subunit " + d.id; })
-//       .attr("d", pathPakistan);
+var projectionPakistan = d3.geo.mercator()
+    .center([79.1, 22])
+    .scale(900)
+    .translate([width, height]);
 
-//   pakistan.append("path")
-//       .datum(topojson.feature(country, country.objects.subunits))
-//       .attr("d", pathPakistan)
-//       .attr("class", "hello")
+var pathPakistan = d3.geo.path()
+    .projection(projectionPakistan)
+    .pointRadius(2);
 
-//   pakistan.append("path")
-//       .datum(topojson.feature(country, country.objects.places))
-//       .attr("d", pathPakistan)
-//       .attr("class", "place");
+d3.json("data/pakistan.json", function(error, country) {
+  pakistan.selectAll(".subunit")
+      .data(topojson.feature(country, country.objects.subunits).features)
+    .enter().append("path")
+      .attr("class", function(d) { return "subunit " + d.id; })
+      .attr("d", pathPakistan);
 
-//   pakistan.selectAll(".place-label")
-//       .data(topojson.feature(country, country.objects.places).features)
-//     .enter().append("text")
-//       .attr("class", "place-label")
-//       .attr("transform", function(d) { return "translate(" + projectionPakistan(d.geometry.coordinates) + ")"; })
-//       .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
-//       .attr("dy", ".35em")
-//       .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
-//       .text(function(d) { return d.properties.name; });
-// });
+  pakistan.append("path")
+      .datum(topojson.feature(country, country.objects.subunits))
+      .attr("d", pathPakistan)
+      .attr("class", "hello")
+
+  pakistan.append("path")
+      .datum(topojson.feature(country, country.objects.places))
+      .attr("d", pathPakistan)
+      .attr("class", "place");
+
+  pakistan.selectAll(".place-label")
+      .data(topojson.feature(country, country.objects.places).features)
+    .enter().append("text")
+      .attr("class", "place-label")
+      .attr("transform", function(d) { return "translate(" + projectionPakistan(d.geometry.coordinates) + ")"; })
+      .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+      .attr("dy", ".35em")
+      .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+      .text(function(d) { return d.properties.name; });
+
+  d3.json("data/drones.json", function(error, json) {
+    dataset = json.strike
+    pakistan.selectAll("circle")
+      .data(dataset).enter()
+        .append("circle")
+        .attr("class", "strike")
+        .attr("visibility", function(d) { if (d.country == "Pakistan") { return "ok" } else { return "hidden" } })
+        .attr("r", 3)
+        .attr("transform", function(d) { return "translate(" + projectionPakistan([d.lon, d.lat]) + ")" } )
+  })
+
+  pakistan.selectAll("circle[visibility = hidden]").remove()
+
+});
 
 var projectionYemen = d3.geo.mercator()
     .center([55, 9.25])
@@ -823,6 +837,20 @@ d3.json("data/yemen.json", function(error, country) {
       .attr("dy", ".35em")
       .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
       .text(function(d) { return d.properties.name; });
+
+  d3.json("data/drones.json", function(error, json) {
+    dataset = json.strike
+    yemen.selectAll("circle")
+      .data(dataset).enter()
+        .append("circle")
+        .attr("class", "strike")
+        .attr("visibility", function(d) { if (d.country == "Yemen") { return "ok" } else { return "hidden" } })
+        .attr("r", 3)
+        .attr("transform", function(d) { return "translate(" + projectionYemen([d.lon, d.lat]) + ")" } )
+  })
+
+  yemen.selectAll("circle[visibility = hidden]").remove()
+
 });
 
 var projectionSomalia = d3.geo.mercator()
@@ -860,10 +888,24 @@ d3.json("data/somalia.json", function(error, country) {
     .enter().append("text")
       .attr("class", "place-label")
       .attr("transform", function(d) { return "translate(" + pathSomalia(d.geometry.coordinates) + ")"; })
-      .attr("x", 71)
-      .attr("dy", "10.9em")
+      .attr("x", 137)
+      .attr("dy", "21.5em")
       .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
       .text(function(d) { return d.properties.name; });
+
+  d3.json("data/drones.json", function(error, json) {
+    dataset = json.strike
+    somalia.selectAll("circle")
+      .data(dataset).enter()
+        .append("circle")
+        .attr("class", "strike")
+        .attr("visibility", function(d) { if (d.country == "Somalia") { return "ok" } else { return "hidden" } })
+        .attr("r", 3)
+        .attr("transform", function(d) { return "translate(" + projectionSomalia([d.lon, d.lat]) + ")" } )
+  })
+
+  somalia.selectAll("circle[visibility = hidden]").remove()
+
 });
 
 
