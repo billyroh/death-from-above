@@ -360,6 +360,13 @@ svg.timeline-map {
 <div class="section" id="annual-sums-by-country">
   <h2>Annual Sums</h2>
   <div class="sparkline-wrapper">
+    <div class="data-type-label">Total Injury Estimate</div>
+    <div class="summary">The deadliest year for <span class="emphasis">Pakistan</span> was <span class="emphasis">2010</span>, with <span class="emphasis">882-1066 people killed</span>.</div>
+    <div class="summary">The deadliest year for <span class="emphasis">Yemen</span> was <span class="emphasis">2012</span>, with <span class="emphasis">416-554 people killed</span>.</div>
+    <div class="summary">The deadliest year for <span class="emphasis">Somalia</span> was <span class="emphasis">2011</span>, with <span class="emphasis">18-19 people killed</span>.</div>
+    <svg class="sparkline" id="injuries"></svg>
+  </div>
+  <div class="sparkline-wrapper">
     <div class="data-type-label">Total Death Estimate</div>
     <div class="summary">The deadliest year for <span class="emphasis">Pakistan</span> was <span class="emphasis">2010</span>, with <span class="emphasis">882-1066 people killed</span>.</div>
     <div class="summary">The deadliest year for <span class="emphasis">Yemen</span> was <span class="emphasis">2012</span>, with <span class="emphasis">416-554 people killed</span>.</div>
@@ -457,9 +464,10 @@ Timeline by country
 // Set up
 var sparklineWidth = $(".sparkline").width(),
     sparklineHeight = $(".sparkline").height(),
-    dataTypes = ["deaths", "children", "civilians"],
+    dataTypes = ["injuries", "deaths", "children", "civilians"],
     affectedCountries = ["Yemen", "Pakistan", "Somalia"],
     annualSums = {
+        "injuries": [],
         "deaths": [],
         "children": [],
         "civilians": []
@@ -495,7 +503,7 @@ d3.json("data/drones.json", function(error, json) {
       yScaleDeathsMax
 
   // Calculate sum for each year for each data type
-  var dataTypes = ["deaths", "children", "civilians"]
+  var dataTypes = ["injuries", "deaths", "children", "civilians"]
   for (var i = 0; i < dataTypes.length; i++) {
     annualSums[dataTypes[i]] = d3.nest()
       .key(function(d) { return d.country })
@@ -542,6 +550,9 @@ d3.json("data/drones.json", function(error, json) {
   // Chart variables
   var circleSpacing = ($(".sparkline").width() - padding.right + 13) / (2014 - 2002),
       sparklineHeight = $(".sparkline").height() - padding.top,
+      yScaleInjuries = d3.scale.linear()
+            .domain([0, getMaxOfDataType("injuries")])
+            .range([sparklineHeight - padding.bottom, 0]),
       yScaleDeaths = d3.scale.linear()
             .domain([0, getMaxOfDataType("deaths")])
             .range([sparklineHeight - padding.bottom, 0]),
@@ -552,16 +563,19 @@ d3.json("data/drones.json", function(error, json) {
             .domain([0, getMaxOfDataType("civilians")])
             .range([sparklineHeight - padding.bottom, 0]),
       yScale = {
+        "injuries": yScaleInjuries,
         "deaths": yScaleDeaths,
         "children": yScaleChildren,
         "civilians": yScaleCivilians
       },
       selector = {
+        "injuries": d3.select(".sparkline#injuries"),
         "deaths": d3.select(".sparkline#deaths"),
         "children": d3.select(".sparkline#children"),
         "civilians": d3.select(".sparkline#civilians")
       }
       sparklineLineSelector = {
+        "injuries": selector["injuries"].selectAll("line"),
         "deaths": selector["deaths"].selectAll("line"),
         "children": selector["children"].selectAll("line"),
         "civilians": selector["civilians"].selectAll("line")
@@ -569,6 +583,7 @@ d3.json("data/drones.json", function(error, json) {
 
   // y axis
   var yAxis = {
+    "injuries": [],
     "deaths": [],
     "civilians": [],
     "children": [],
