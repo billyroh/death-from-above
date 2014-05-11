@@ -3,10 +3,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 <head>
 <title>Death from Above</title>
+<link rel="stylesheet" type="text/css" href="//cloud.typography.com/7886252/756864/css/fonts.css" />
 <style>
 
 body {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'Mercury SSm A', 'Mercury SSm B', Georgia, "Times New Roman", serif;
   color: #454545;
   margin: 0 auto;
   padding: 40px 20px 60px 20px;
@@ -14,10 +15,28 @@ body {
   min-width: 320px;
   /*width: 320px;*/
   font-size: 18px;
+  line-height: 25px;
+  font-weight: 400;
+  background-color: #fff;
 }
 
 h1, h2, h3 {
   font-weight: 300;
+}
+
+h1 {
+  /*font-family: 'Gotham SSm A', 'Gotham SSm B';*/
+  font-weight: 700;
+  line-height: 44px;
+}
+
+h2 {
+  /*font-family: 'Gotham SSm A', 'Gotham SSm B';*/
+  line-height: 35px;
+  font-size: 24px;
+  /*font-style: italic;*/
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
 p {
@@ -40,10 +59,16 @@ a {
 }
 
 .section {
-  display: block;
+  padding-bottom: 30px;
+  border-bottom: 1px solid;
+
 }
 
 /* Sparklines */
+
+.summary {
+  margin-bottom: 10px;
+}
 
 .country-label, .sparkline {
   /*width: 300px;
@@ -76,8 +101,13 @@ a {
   margin-right: 0px;
 }
 
-.data-type-label {
+.data-type-label, .timeline-country-label {
+  /*font-family: 'Sentinel SSm A', 'Sentinel SSm B';*/
+  /*font-family: 'Gotham SSm A', 'Gotham SSm B';*/
+  /*text-transform: uppercase;*/
+  font-weight: 700;
   margin-bottom: 10px;
+  /*color: #575757;*/
 }
 
 /* Sparkline Stuff */
@@ -352,10 +382,10 @@ svg.timeline-map {
 </style>
 </head>
 <body>
-<div class="text" id="intro">
+<div class="section" id="intro">
   <h1>Death from Above</h1>
   <h2>Mapping deaths from drone strikes.<br /></h2>
-  <h3>Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></h3>
+  <div>Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
 </div>
 <div class="section" id="annual-sums-by-country">
   <h2>Annual Sums</h2>
