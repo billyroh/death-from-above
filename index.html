@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 <head>
 <title>Death from Above</title>
 <style>
@@ -8,20 +9,23 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   color: #454545;
   margin: 0 auto;
-  padding: 20px;
+  padding: 40px 20px 60px 20px;
   max-width: 945px;
   min-width: 320px;
+  /*width: 320px;*/
+  font-size: 18px;
 }
 
 h1, h2, h3 {
   font-weight: 300;
 }
 
-h1, h2, p {
+p {
+  font-size: 16px;
 }
 
 h3 {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 a {
@@ -410,11 +414,15 @@ svg.timeline-map {
       <option value="civilians">Civilian Deaths</option>
       <option value="children">Child Deaths</option>
     </select>
-    <div class="summary">The deadliest strike was on <span class="emphasis">DATE NEEDED</span>, with <span class="emphasis">NUMBER NEEDED deaths</span>.</div>
+    <div class="summary">The deadliest strike was on <span class="emphasis">October 23, 2011</span>, with <span class="emphasis">11 deaths</span>.</div>
     <div class="summary">Fatal strikes were most common in <span class="emphasis">2011</span> with <span class="emphasis">5 strikes</span>.</div>
     <svg class="timeline" id="Somalia"></svg>
     <svg class="timeline-map" id="Somalia"></svg>
   </div>
+</div>
+<div class="footer">
+  Learn more at <a href="http://www.livingunderdrones.org/">Living Under Drones</a>
+  Get live updates at <a href="https://twitter.com/dronestream">@dronestream</a>
 </div>
 <!-- </div>
 <div class="data-type-selector-wrapper">
@@ -451,12 +459,6 @@ var sparklineWidth = $(".sparkline").width(),
     sparklineHeight = $(".sparkline").height(),
     dataTypes = ["deaths", "children", "civilians"],
     affectedCountries = ["Yemen", "Pakistan", "Somalia"],
-    annualSums = {
-        "deaths_max": [],
-        "deaths_min": [],
-        "children": [],
-        "civilians": []
-    },
     annualSums = {
         "deaths": [],
         "children": [],
@@ -637,12 +639,12 @@ d3.json("data/drones.json", function(error, json) {
     .attr("height", sparklineHeight)
     .attr("opacity", 0)
     .on("mouseover", dummy)
-    // .on("mouseout", resetYear)
+    .on("mousemove", dummy)
 
-    function dummy() {
-      console.log("hi");
-      console.log(d3.mouse(this));
-    }
+  function dummy() {
+    console.log("hi");
+    console.log(d3.mouse(this));
+  }
 
   // Put each country annual sum data into graph, separate by dataType
   for (var dataTypesIndex = 0; dataTypesIndex < dataTypes.length; dataTypesIndex++) {
@@ -804,47 +806,7 @@ var path = {
     .pointRadius(2)
 }
 
-// // TODO why won't this work????????!??!?!?!?!?!?!
-// for (var i = 0; i < affectedCountries.length; i++) {
-//   var currentSelector = d3.select(".timeline-map#" + affectedCountries[i])
-//         .attr("width", width)
-//         .attr("height", height),
-//       currentProjection = projection[affectedCountries[i]],
-//       currentPathName = "data/" + affectedCountries[i].toLowerCase() + ".json"
-
-//     console.log("");
-//     console.log(affectedCountries[i]);
-//     console.log(currentPathName);
-//     console.log(currentSelector.selectAll(".subunit"));
-//   // d3.json("data/pakistan.json", function(error, country) {
-//   d3.json(("" + currentPathName), function(error, country) {
-//     currentSelector.selectAll(".subunit")
-//         .data(topojson.feature(country, country.objects.subunits).features)
-//       .enter().append("path")
-//         .attr("class", function(d) {console.log(d); return "subunit " + d.id; })
-//         .attr("d", path[affectedCountries[i]]);
-
-//     currentSelector.append("path")
-//         .datum(topojson.feature(country, country.objects.subunits))
-//         .attr("d", path[affectedCountries[i]])
-//         .attr("class", "hello")
-
-//     currentSelector.append("path")
-//         .datum(topojson.feature(country, country.objects.places))
-//         .attr("d", path[affectedCountries[i]])
-//         .attr("class", "place");
-
-//     currentSelector.selectAll(".place-label")
-//         .data(topojson.feature(country, country.objects.places).features)
-//       .enter().append("text")
-//         .attr("class", "place-label")
-//         .attr("transform", function(d) { return "translate(" + currentProjection(d.geometry.coordinates) + ")"; })
-//         .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
-//         .attr("dy", ".35em")
-//         .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
-//         .text(function(d) { return d.properties.name; });
-//   });
-// }
+// TODO refactor this section
 
 var pakistan = d3.select(".timeline-map#Pakistan")
     .attr("width", width)
@@ -923,7 +885,6 @@ d3.json("data/yemen.json", function(error, country) {
     .enter().append("path")
       .attr("class", function(d) { return "subunit " + d.id; })
       .attr("d", pathYemen)
-      // .attr("transform", "translate(200, -200)")
 
   yemen.append("path")
       .datum(topojson.feature(country, country.objects.subunits))
@@ -975,6 +936,7 @@ var somalia = d3.select(".timeline-map#Somalia")
     .attr("height", height);
 
 d3.json("data/somalia.json", function(error, country) {
+
   somalia.selectAll(".subunit")
       .data(topojson.feature(country, country.objects.subunits).features)
     .enter().append("path")
@@ -1096,29 +1058,6 @@ d3.json("data/drones.json", function(error, json) {
         .attr("x2", function(d) { return xScale(new Date(d.date)) })
         .attr("y2", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "minimum"))) })
 
-console.log("");
-    console.log(affectedCountries[i]);
-    var yearArray
-
-    yearArray = {
-      "2002": 0,
-      "2003": 0,
-      "2004": 0,
-      "2005": 0,
-      "2006": 0,
-      "2007": 0,
-      "2008": 0,
-      "2009": 0,
-      "2010": 0,
-      "2011": 0,
-      "2012": 0,
-      "2013": 0,
-      "2014": 0,
-    }
-
-    
-  console.log(yearArray);
-
     // Draw circles
     currentTimeline.selectAll("circle")
       .data(dataset).enter()
@@ -1126,16 +1065,25 @@ console.log("");
         .attr("class", "timeline")
         .attr("visibility", function(d) { if (d.country != affectedCountries[i] || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
         .attr("value", function(d) { return getIntegerFromString(d[currentDataType], "average") })
-        .attr("date", function(d) { if (d.country == affectedCountries[i]) { yearArray[d.date.substring(0, 4)] += 1 }; return d.date })
+        .attr("date", function(d) { return d.date })
         .attr("id", function(d) { return d.country })
         .attr("cx", function(d) { return xScale(new Date(d.date)) })
         .attr("cy", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "average"))) })
         .attr("r", function(d) { return 2 })
 
-    console.log(yearArray);
     // Get rid of hidden strikes
     currentTimeline.selectAll("circle[visibility = hidden]").remove()
     currentTimeline.selectAll("line[visibility = hidden]").remove()
+
+    // TODO make tooltips work, make axes interactive
+    currentTimeline
+      .append("rect")
+      .attr("class", "overlay")
+      .attr("width", timelineWidth)
+      .attr("height", timelineHeight)
+      .attr("opacity", 0)
+      .on("mouseover", highlightNearestNode)
+      .on("mousemove", highlightNearestNode)
   }
 
 })
@@ -1144,6 +1092,11 @@ $(".data-type-selector").change(function() {
   redrawTimelines()
   redrawMinimaps()
 })
+
+function highlightNearestNode() {
+  var cursorX = d3.mouse(this)[0]
+  
+}
 
 function redrawTimelines() {
 
