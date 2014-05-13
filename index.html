@@ -7,7 +7,6 @@
 <style>
 
 body {
-  font-family: 'Mercury SSm A', 'Mercury SSm B', Georgia, "Times New Roman", serif;
   font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, "Times New Roman", serif;
   color: #454545;
   margin: 0 auto;
@@ -30,6 +29,9 @@ h1 {
   /*font-family: 'Gotham SSm A', 'Gotham SSm B';*/
   font-weight: 700;
   line-height: 44px;
+  /*text-transform: uppercase;*/
+  font-variant: small-caps;
+  /*font-weight: 300;*/
 }
 
 h2 {
@@ -38,7 +40,8 @@ h2 {
   font-size: 24px;
   /*font-style: italic;*/
   font-weight: 700;
-  margin-bottom: 20px;
+  font-weight: 300;
+  margin-bottom: 14px;
 }
 
 h3 {
@@ -123,7 +126,7 @@ a {
   font-family: 'Gotham SSm A', 'Gotham SSm B';
   display: block;
   font-size: 28px;
-  margin: 10px 0;
+  margin: 9px 0 10px 0;
   color: #454545;
   /*color: white;*/
   /*font-weight: 700;*/
@@ -149,6 +152,7 @@ a {
 
 circle.sparkline, circle.timeline {
   fill: #fff;
+  fill: #EFEEF3;
   stroke: rgb(200, 18, 18);
   stroke-width: 2px;
   stroke-linecap: round;
@@ -339,15 +343,17 @@ circle.not-applicable {
 
 .data-type-selector {
   display: block;
-  width: 240px;
-  height: 34px;
-  overflow: hidden;
+  /*width: 240px;*/
+  /*height: 34px;*/
+  padding: 8px;
+  /*overflow: hidden;*/
   background: transparent;
   -webkit-appearance: none;
-  font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, "Times New Roman", serif;
+  /*font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, "Times New Roman", serif;*/
   font-family: 'Gotham SSm A', 'Gotham SSm B';
   text-transform: uppercase;
   font-size: 16px;
+  margin-bottom: 12px;
 }
 
 /* Tooltip shit */
@@ -442,30 +448,33 @@ svg.timeline-map {
   <div class="by-line">Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
 </div>
 <div class="section" id="annual-sums-by-country">
-  <h2>Annual Sums</h2>
   <div class="sparkline-wrapper" id="injuries-wrapper">
-    <div class="data-type-label">Total Injury Estimate</div>
+    <h2>Total Injury Estimate</h2>
+    <!-- <div class="data-type-label">Total Injury Estimate</div> -->
     <div class="summary" id="Pakistan"><span class="value"></span>People injured in Pakistan</div>
     <div class="summary" id="Yemen"><span class="value"></span>People injured in Yemen</div>
     <div class="summary" id="Somalia"><span class="value"></span>People injured in Somalia</div>
     <svg class="sparkline" id="injuries"></svg>
   </div>
   <div class="sparkline-wrapper" id="deaths-wrapper">
-    <div class="data-type-label">Total Death Estimate</div>
+    <h2>Total Death Estimate</h2>
+    <!-- <div class="data-type-label">Total Death Estimate</div> -->
     <div class="summary" id="Pakistan"><span class="value"></span>People killed in Pakistan</div>
     <div class="summary" id="Yemen"><span class="value"></span></span>People killed in Yemen</div>
     <div class="summary" id="Somalia"><span class="value"></span></span>People killed in Somalia</div>
     <svg class="sparkline" id="deaths"></svg>
   </div>
   <div class="sparkline-wrapper" id="civilians-wrapper">
-    <div class="data-type-label">Civilian Death Estimate</div>
+    <!-- <div class="data-type-label">Civilian Death Estimate</div> -->
+    <h2>Civilian Death Estimate</h2>
     <div class="summary" id="Pakistan"><span class="value"></span>Civilians killed in Pakistan</div>
     <div class="summary" id="Yemen"><span class="value"></span>Civilians killed in Yemen</div>
     <div class="summary" id="Somalia"><span class="value"></span>Civliians killed in Somalia</div>
     <svg class="sparkline" id="civilians"></svg>
   </div>
   <div class="sparkline-wrapper" id="children-wrapper">
-    <div class="data-type-label">Child Death Estimate</div>
+    <!-- <div class="data-type-label">Child Death Estimate</div> -->
+    <h2>Child Death Estimate</h2>
     <div class="summary" id="Pakistan"><span class="value"></span>Children killed in Pakistan</div>
     <div class="summary" id="Yemen"><span class="value"></span>Children killed in Yemen</div>
     <div class="summary" id="Somalia"><span class="value"></span>Children killed in Somalia</div>
@@ -473,40 +482,42 @@ svg.timeline-map {
   </div>
 </div>
 <div class="section" id="timeline-by-country">
-  <h2>Timelines</h2>
   <div class="timeline-wrapper clearfix">
-    <div class="timeline-country-label" id="Pakistan">Pakistan</div>
+    <!-- <div class="timeline-country-label" id="Pakistan">Pakistan</div> -->
+    <h2>Pakistan</h2>
     <select class="data-type-selector" id="Pakistan">
       <option value="deaths">Total Deaths</option>
       <option value="civilians">Civilian Deaths</option>
       <option value="children">Child Deaths</option>
     </select>
-    <div class="summary"><span class="value">82 people killed</span> <span class="emphasis">Deadliest strike (October 30, 2006)</span></div>
-    <div class="summary"><span class="value">129</span> <span class="emphasis">Most strikes in a year (2010)</span></div>
+    <div class="summary">Date of Biggest Strike<span class="value">October 30, 2006</span> <span class="emphasis">82 people killed</span></div>
+    <div class="summary">Year with most strikes<span class="value">2010</span>129 strikes</div>
     <svg class="timeline" id="Pakistan"></svg>
     <svg class="timeline-map" id="Pakistan"></svg>
   </div>
   <div class="timeline-wrapper clearfix">
-    <div class="timeline-country-label" id="Yemen">Yemen</div>
+    <!-- <div class="timeline-country-label" id="Yemen">Yemen</div> -->
+    <h2>Yemen</h2>
     <select class="data-type-selector" id="Yemen">
       <option value="deaths">Total Deaths</option>
       <option value="civilians">Civilian Deaths</option>
       <option value="children">Child Deaths</option>
     </select>
-    <div class="summary">Deadliest strike<span class="value">38 people killed</span> <span class="emphasis">October 30, 2006</span></div>
-    <div class="summary">Most strikes in a year<span class="value">62</span> <span class="emphasis">2012</span></div>
+    <div class="summary">Biggest strike<span class="value">July 1, 2012</span><span class="emphasis">6-80 people killed</span></div>
+    <div class="summary">Year with most strikes<span class="value">2012</span>62 strikes</div>
     <svg class="timeline" id="Yemen"></svg>
     <svg class="timeline-map" id="Yemen"></svg>
   </div>
   <div class="timeline-wrapper clearfix">
-    <div class="timeline-country-label" id="Somalia">Somalia</div>
+    <!-- <div class="timeline-country-label" id="Somalia">Somalia</div> -->
+    <h2>Somalia</h2>
     <select class="data-type-selector" id="Somalia">
       <option value="deaths">Total Deaths</option>
       <option value="civilians">Civilian Deaths</option>
       <option value="children">Child Deaths</option>
     </select>
-    <div class="summary">Deadliest strike<span class="value">11 people killed</span> <span class="emphasis">October 23, 2011</span></div>
-    <div class="summary">Most strikes in a year<span class="value">Five</span> <span class="emphasis">2011</span></div>
+    <div class="summary">Date of Biggest Strike<span class="value">October 23, 2011</span>11 people killed</div>
+    <div class="summary">Year with most strikes<span class="value">2011</span>Five strikes</div>
     <svg class="timeline" id="Somalia"></svg>
     <svg class="timeline-map" id="Somalia"></svg>
   </div>
@@ -730,8 +741,8 @@ d3.json("data/drones.json", function(error, json) {
           .attr("class", "y axis")
 
         currentSelector.selectAll("text")
-          .attr("x", 0)
-          .attr("text-align", "right")
+          .attr("x", (-1 * sparklineWidth) + padding.left + 3)
+          .attr("text-align", "left")
 
         if (j != affectedCountries.length - 1) {
           currentSelector.selectAll("text")
@@ -761,7 +772,7 @@ d3.json("data/drones.json", function(error, json) {
   sparkline
     .append("text")
     .attr("class", "axis end-date")
-    .attr("x", sparklineWidth - padding.left - padding.right + 15)
+    .attr("x", sparklineWidth - padding.left - padding.right + 12)
     .attr("y", sparklineHeight + padding.bottom - 3)
     .text("2014")
 
@@ -777,8 +788,8 @@ d3.json("data/drones.json", function(error, json) {
     .on("mousemove", dummy)
 
   function dummy() {
-    console.log("hi");
-    console.log(d3.mouse(this));
+    // console.log("hi");
+    // console.log(d3.mouse(this));
   }
 
   // Put each country annual sum data into graph, separate by dataType
@@ -1315,6 +1326,7 @@ function redrawMinimaps() {
 
   var currentDataTypePakistan = $(".data-type-selector#Pakistan").val()
   pakistan.selectAll("circle[deaths = yes]").style("opacity", 0)
+  // pakistan.selectAll("circle[deaths = yes]").addClass("not-applicable")
   pakistan.selectAll("circle[" + currentDataTypePakistan + " = yes]").style("opacity", defaultOpacity)
 
 
