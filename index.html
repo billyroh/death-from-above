@@ -8,16 +8,18 @@
 
 body {
   font-family: 'Mercury SSm A', 'Mercury SSm B', Georgia, "Times New Roman", serif;
+  font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, "Times New Roman", serif;
   color: #454545;
   margin: 0 auto;
-  padding: 40px 20px 60px 20px;
+  padding: 20px 20px 60px 20px;
   max-width: 945px;
   min-width: 320px;
   /*width: 320px;*/
   font-size: 18px;
   line-height: 25px;
   font-weight: 400;
-  background-color: #fff;
+  background-color: #EFEEF3;
+  /*color: white;*/
 }
 
 h1, h2, h3 {
@@ -36,7 +38,11 @@ h2 {
   font-size: 24px;
   /*font-style: italic;*/
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  color: gray;
 }
 
 p {
@@ -50,6 +56,7 @@ h3 {
 a {
   /*text-decoration: none;*/
   color: #454545;
+  color: gray;
 }
 
 .clearfix:after {
@@ -60,15 +67,15 @@ a {
 
 .section {
   padding-bottom: 30px;
-  border-bottom: 1px solid;
+  /*border-bottom: 1px solid;*/
 
+}
+
+.by-line {
+  color: gray;
 }
 
 /* Sparklines */
-
-.summary {
-  margin-bottom: 10px;
-}
 
 .country-label, .sparkline {
   /*width: 300px;
@@ -88,7 +95,7 @@ a {
 
 .sparkline-wrapper {
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 60px;
   /*height: 200px;*/
 }
 
@@ -107,10 +114,38 @@ a {
   /*text-transform: uppercase;*/
   font-weight: 700;
   margin-bottom: 10px;
+  color: gray;
   /*color: #575757;*/
 }
 
-/* Sparkline Stuff */
+/* Summary stuff */
+.value {
+  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  display: block;
+  font-size: 28px;
+  margin: 10px 0;
+  color: #454545;
+  /*color: white;*/
+  /*font-weight: 700;*/
+}
+
+.summary {
+  float: left;
+  width: 300px;
+  margin: 0 22px 20px 0px;
+  font-size: 16px;
+  color: gray;
+  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  text-transform: uppercase;
+  /*padding-top: 10px;
+  border-top: 1px solid;*/
+}
+
+.summary:last-of-type {
+  margin-right: 0;
+}
+
+/* Sparkline Graph Stuff */
 
 circle.sparkline, circle.timeline {
   fill: #fff;
@@ -222,6 +257,7 @@ circle.not-shown {
 
 .country-name {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Gotham SSm A', 'Gotham SSm B';
   fill: #000;
   opacity: 0.3;
   margin-left: -10px;
@@ -286,6 +322,7 @@ circle.not-shown {
 
 .axis text, text.axis {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Gotham SSm A', 'Gotham SSm B';
   font-size: 11px;
   cursor: default;
 }
@@ -295,10 +332,22 @@ circle.not-shown {
   stroke-dasharray: 2,2;
 }
 
-
 circle.not-applicable {
   opacity: 0;
   /*display: none;*/
+}
+
+.data-type-selector {
+  display: block;
+  width: 240px;
+  height: 34px;
+  overflow: hidden;
+  background: transparent;
+  -webkit-appearance: none;
+  font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, "Times New Roman", serif;
+  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  text-transform: uppercase;
+  font-size: 16px;
 }
 
 /* Tooltip shit */
@@ -334,7 +383,10 @@ circle.not-applicable {
 
 /* Timeline maps */
 
-.subunit.PAK, .country { fill: #ddc; }
+.country {
+  fill: #fff;
+  stroke: none;
+}
 
 .subunit-boundary {
   fill: none;
@@ -344,7 +396,7 @@ circle.not-applicable {
 }
 
 .subunit-boundary.IRL {
-  stroke: #aaa;
+  /*stroke: #aaa;*/
 }
 
 .place,
@@ -354,6 +406,8 @@ circle.not-applicable {
 
 text {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  text-transform: uppercase;
   font-size: 10px;
   pointer-events: none;
 }
@@ -384,37 +438,37 @@ svg.timeline-map {
 <body>
 <div class="section" id="intro">
   <h1>Death from Above</h1>
-  <h2>Mapping deaths from drone strikes.<br /></h2>
-  <div>Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
+  <h2>Mapping injuries and deaths from US drone strikes<br /></h2>
+  <div class="by-line">Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
 </div>
 <div class="section" id="annual-sums-by-country">
   <h2>Annual Sums</h2>
-  <div class="sparkline-wrapper">
+  <div class="sparkline-wrapper" id="injuries-wrapper">
     <div class="data-type-label">Total Injury Estimate</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Pakistan</span> was <span class="emphasis">2010</span>, with <span class="emphasis">882-1066 people killed</span>.</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Yemen</span> was <span class="emphasis">2012</span>, with <span class="emphasis">416-554 people killed</span>.</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Somalia</span> was <span class="emphasis">2011</span>, with <span class="emphasis">18-19 people killed</span>.</div>
+    <div class="summary" id="Pakistan"><span class="value"></span>People injured in Pakistan</div>
+    <div class="summary" id="Yemen"><span class="value"></span>People injured in Yemen</div>
+    <div class="summary" id="Somalia"><span class="value"></span>People injured in Somalia</div>
     <svg class="sparkline" id="injuries"></svg>
   </div>
-  <div class="sparkline-wrapper">
+  <div class="sparkline-wrapper" id="deaths-wrapper">
     <div class="data-type-label">Total Death Estimate</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Pakistan</span> was <span class="emphasis">2010</span>, with <span class="emphasis">882-1066 people killed</span>.</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Yemen</span> was <span class="emphasis">2012</span>, with <span class="emphasis">416-554 people killed</span>.</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Somalia</span> was <span class="emphasis">2011</span>, with <span class="emphasis">18-19 people killed</span>.</div>
+    <div class="summary" id="Pakistan"><span class="value"></span>People killed in Pakistan</div>
+    <div class="summary" id="Yemen"><span class="value"></span></span>People killed in Yemen</div>
+    <div class="summary" id="Somalia"><span class="value"></span></span>People killed in Somalia</div>
     <svg class="sparkline" id="deaths"></svg>
   </div>
-  <div class="sparkline-wrapper">
+  <div class="sparkline-wrapper" id="civilians-wrapper">
     <div class="data-type-label">Civilian Death Estimate</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Pakistan</span> was <span class="emphasis">2010</span>, with <span class="emphasis">99-206 civilians killed</span>.</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Yemen</span> was <span class="emphasis">2012</span>, with <span class="emphasis">38-55 civilians killed</span>.</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Somalia</span> was <span class="emphasis">2011</span>, with <span class="emphasis">15 civilians killed</span>.</div>
+    <div class="summary" id="Pakistan"><span class="value"></span>Civilians killed in Pakistan</div>
+    <div class="summary" id="Yemen"><span class="value"></span>Civilians killed in Yemen</div>
+    <div class="summary" id="Somalia"><span class="value"></span>Civliians killed in Somalia</div>
     <svg class="sparkline" id="civilians"></svg>
   </div>
-  <div class="sparkline-wrapper">
+  <div class="sparkline-wrapper" id="children-wrapper">
     <div class="data-type-label">Child Death Estimate</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Pakistan</span> was <span class="emphasis">2010</span>, with <span class="emphasis">75 children killed</span>.</div>
-    <div class="summary">The deadliest year for <span class="emphasis">Yemen</span> was <span class="emphasis">2012</span>, with <span class="emphasis">9 children killed</span>.</div>
-    <div class="summary">No children died in Somalia as a result of a US drone strike.</div>
+    <div class="summary" id="Pakistan"><span class="value"></span>Children killed in Pakistan</div>
+    <div class="summary" id="Yemen"><span class="value"></span>Children killed in Yemen</div>
+    <div class="summary" id="Somalia"><span class="value"></span>Children killed in Somalia</div>
     <svg class="sparkline" id="children"></svg>
   </div>
 </div>
@@ -427,8 +481,8 @@ svg.timeline-map {
       <option value="civilians">Civilian Deaths</option>
       <option value="children">Child Deaths</option>
     </select>
-    <div class="summary">The deadliest strike was on <span class="emphasis">October 30, 2006</span>, with <span class="emphasis">82 people killed</span>.</div>
-    <div class="summary">Fatal strikes were most common in <span class="emphasis">2010</span> with <span class="emphasis">129 strikes</span>.</div>
+    <div class="summary"><span class="value">82 people killed</span> <span class="emphasis">Deadliest strike (October 30, 2006)</span></div>
+    <div class="summary"><span class="value">129</span> <span class="emphasis">Most strikes in a year (2010)</span></div>
     <svg class="timeline" id="Pakistan"></svg>
     <svg class="timeline-map" id="Pakistan"></svg>
   </div>
@@ -439,8 +493,8 @@ svg.timeline-map {
       <option value="civilians">Civilian Deaths</option>
       <option value="children">Child Deaths</option>
     </select>
-    <div class="summary">The deadliest strike was on <span class="emphasis">April 1, 2012</span>, with <span class="emphasis">38 deaths</span>.</div>
-    <div class="summary">Fatal strikes were most common in <span class="emphasis">2012</span> with <span class="emphasis">62 strikes</span>.</div>
+    <div class="summary">Deadliest strike<span class="value">38 people killed</span> <span class="emphasis">October 30, 2006</span></div>
+    <div class="summary">Most strikes in a year<span class="value">62</span> <span class="emphasis">2012</span></div>
     <svg class="timeline" id="Yemen"></svg>
     <svg class="timeline-map" id="Yemen"></svg>
   </div>
@@ -451,8 +505,8 @@ svg.timeline-map {
       <option value="civilians">Civilian Deaths</option>
       <option value="children">Child Deaths</option>
     </select>
-    <div class="summary">The deadliest strike was on <span class="emphasis">October 23, 2011</span>, with <span class="emphasis">11 deaths</span>.</div>
-    <div class="summary">Fatal strikes were most common in <span class="emphasis">2011</span> with <span class="emphasis">5 strikes</span>.</div>
+    <div class="summary">Deadliest strike<span class="value">11 people killed</span> <span class="emphasis">October 23, 2011</span></div>
+    <div class="summary">Most strikes in a year<span class="value">Five</span> <span class="emphasis">2011</span></div>
     <svg class="timeline" id="Somalia"></svg>
     <svg class="timeline-map" id="Somalia"></svg>
   </div>
@@ -574,6 +628,42 @@ d3.json("data/drones.json", function(error, json) {
         annualSums[dataTypes[i]][j].values.push(year)
       }
       annualSums[dataTypes[i]][j].values.sort(function(a, b) { return a.key - b.key }) // sort in ascending order
+    }
+  }
+
+  var numbersWrittenOut = [
+    "Zero",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine"
+  ]
+
+  // Put in values for summary
+  for (var i = 0; i < dataTypes.length; i++) {
+    for (var j = 0; j < annualSums[dataTypes[i]].length; j++) {
+      var minimum = 0,
+          maximum = 0
+      for (var k = 0; k < annualSums[dataTypes[i]][j].values.length; k++) {
+        minimum += annualSums[dataTypes[i]][j].values[k].values.minimum
+        maximum += annualSums[dataTypes[i]][j].values[k].values.maximum
+      }
+      var value = ""
+      if (minimum == maximum) {
+        value = minimum
+      } else {
+        value = minimum + "-" + maximum
+      }
+      if (value < 10) {
+        value = numbersWrittenOut[value]
+      }
+      var currentText = $("#" + dataTypes[i] + "-wrapper>.summary#" + annualSums[dataTypes[i]][j].key + ">.value").text()
+      $("#" + dataTypes[i] + "-wrapper>.summary#" + annualSums[dataTypes[i]][j].key + ">.value").text(value + currentText)
     }
   }
 
