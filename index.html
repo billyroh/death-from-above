@@ -12,12 +12,13 @@ body {
   margin: 0 auto;
   padding: 20px 20px 60px 20px;
   max-width: 945px;
-  min-width: 320px;
+  min-width: 300px;
   /*width: 320px;*/
   font-size: 18px;
   line-height: 25px;
   font-weight: 400;
   background-color: #EFEEF3;
+  /*background-color: #fff;*/
   /*color: white;*/
 }
 
@@ -85,6 +86,7 @@ a {
   float: left;
   margin-right: 20px;*/
   width: 100%;
+  min-width: 300px;
 }
 
 .country-label {
@@ -445,39 +447,39 @@ svg.timeline-map {
 <div class="section" id="intro">
   <h1>Death from Above</h1>
   <h2>Mapping injuries and deaths from US drone strikes<br /></h2>
-  <div class="by-line">Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
+  <div class="by-line">Data pulled from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
 </div>
 <div class="section" id="annual-sums-by-country">
   <div class="sparkline-wrapper" id="injuries-wrapper">
     <h2>Total Injury Estimate</h2>
     <!-- <div class="data-type-label">Total Injury Estimate</div> -->
-    <div class="summary" id="Pakistan"><span class="value"></span>People injured in Pakistan</div>
-    <div class="summary" id="Yemen"><span class="value"></span>People injured in Yemen</div>
-    <div class="summary" id="Somalia"><span class="value"></span>People injured in Somalia</div>
+    <div class="summary" id="Pakistan">People injured in Pakistan<span class="value"></span></div>
+    <div class="summary" id="Yemen">People injured in Yemen<span class="value"></span></div>
+    <div class="summary" id="Somalia">People injured in Somalia<span class="value"></span></div>
     <svg class="sparkline" id="injuries"></svg>
   </div>
   <div class="sparkline-wrapper" id="deaths-wrapper">
     <h2>Total Death Estimate</h2>
     <!-- <div class="data-type-label">Total Death Estimate</div> -->
-    <div class="summary" id="Pakistan"><span class="value"></span>People killed in Pakistan</div>
-    <div class="summary" id="Yemen"><span class="value"></span></span>People killed in Yemen</div>
-    <div class="summary" id="Somalia"><span class="value"></span></span>People killed in Somalia</div>
+    <div class="summary" id="Pakistan">People killed in Pakistan<span class="value"></span></div>
+    <div class="summary" id="Yemen">People killed in Yemen<span class="value"></span></div>
+    <div class="summary" id="Somalia">People killed in Somalia<span class="value"></span></div>
     <svg class="sparkline" id="deaths"></svg>
   </div>
   <div class="sparkline-wrapper" id="civilians-wrapper">
     <!-- <div class="data-type-label">Civilian Death Estimate</div> -->
     <h2>Civilian Death Estimate</h2>
-    <div class="summary" id="Pakistan"><span class="value"></span>Civilians killed in Pakistan</div>
-    <div class="summary" id="Yemen"><span class="value"></span>Civilians killed in Yemen</div>
-    <div class="summary" id="Somalia"><span class="value"></span>Civliians killed in Somalia</div>
+    <div class="summary" id="Pakistan">Civilians killed in Pakistan<span class="value"></span></div>
+    <div class="summary" id="Yemen"></span>Civilians killed in Yemen<span class="value"></span></div>
+    <div class="summary" id="Somalia">Civliians killed in Somalia<span class="value"></span></div>
     <svg class="sparkline" id="civilians"></svg>
   </div>
   <div class="sparkline-wrapper" id="children-wrapper">
     <!-- <div class="data-type-label">Child Death Estimate</div> -->
     <h2>Child Death Estimate</h2>
-    <div class="summary" id="Pakistan"><span class="value"></span>Children killed in Pakistan</div>
-    <div class="summary" id="Yemen"><span class="value"></span>Children killed in Yemen</div>
-    <div class="summary" id="Somalia"><span class="value"></span>Children killed in Somalia</div>
+    <div class="summary" id="Pakistan">Children killed in Pakistan<span class="value"></span></div>
+    <div class="summary" id="Yemen">Children killed in Yemen<span class="value"></span></div>
+    <div class="summary" id="Somalia">Children killed in Somalia<span class="value"></span></div>
     <svg class="sparkline" id="children"></svg>
   </div>
 </div>
@@ -1000,6 +1002,7 @@ d3.json("data/pakistan.json", function(error, country) {
       .data(dataset).enter()
         .append("circle")
         .attr("class", "strike")
+        .attr("id", function(d) { return "uid" + d.number })
         .attr("deaths", function(d) { if (d.country == "Pakistan" && getIntegerFromString(d["deaths"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("civilians", function(d) { if (d.country == "Pakistan" && getIntegerFromString(d["civilians"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("children", function(d) { if (d.country == "Pakistan" && getIntegerFromString(d["children"], "average") > 0) { return "yes" } else { return "none" } })
@@ -1058,6 +1061,7 @@ d3.json("data/yemen.json", function(error, country) {
       .data(dataset).enter()
         .append("circle")
         .attr("class", "strike")
+        .attr("id", function(d) { return "uid" + d.number })
         .attr("deaths", function(d) { if (d.country == "Yemen" && getIntegerFromString(d["deaths"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("civilians", function(d) { if (d.country == "Yemen" && getIntegerFromString(d["civilians"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("children", function(d) { if (d.country == "Yemen" && getIntegerFromString(d["children"], "average") > 0) { return "yes" } else { return "none" } })
@@ -1115,6 +1119,7 @@ d3.json("data/somalia.json", function(error, country) {
       .data(dataset).enter()
         .append("circle")
         .attr("class", "strike")
+        .attr("id", function(d) { return "uid" + d.number })
         .attr("deaths", function(d) { if (d.country == "Somalia" && getIntegerFromString(d["deaths"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("civilians", function(d) { if (d.country == "Somalia" && getIntegerFromString(d["civilians"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("children", function(d) { if (d.country == "Somalia" && getIntegerFromString(d["children"], "average") > 0) { return "yes" } else { return "none" } })
@@ -1133,6 +1138,11 @@ d3.json("data/somalia.json", function(error, country) {
 
 */
 
+var dateArray = {
+    "Pakistan": [],
+    "Yemen": [],
+    "Somalia": [] 
+  }
 
 d3.json("data/drones.json", function(error, json) {
   var dataset = json.strike,
@@ -1156,13 +1166,14 @@ d3.json("data/drones.json", function(error, json) {
 
   for (var i = 0; i < affectedCountries.length; i++) {
     var currentYScale,
-        currentTimeline = d3.select(".timeline#" + affectedCountries[i]),
+        currentCountry = affectedCountries[i],
+        currentTimeline = d3.select(".timeline#" + currentCountry),
         currentMax,
-        currentDataType = $(".data-type-selector#" + affectedCountries[i]).val()
+        currentDataType = $(".data-type-selector#" + currentCountry).val()
 
-    currentMax = d3.max(dataset, function(d) { if (d.country == affectedCountries[i]) { return getIntegerFromString(d.deaths, "maximum") } })
+    currentMax = d3.max(dataset, function(d) { if (d.country == currentCountry) { return getIntegerFromString(d.deaths, "maximum") } })
 
-    yScale[affectedCountries[i]] = d3.scale.linear()
+    yScale[currentCountry] = d3.scale.linear()
       .domain([0, currentMax])
       .range([timelineHeight - padding.top, padding.bottom])
 
@@ -1198,7 +1209,9 @@ d3.json("data/drones.json", function(error, json) {
       .data(dataset).enter()
         .append("line")
         .attr("class", "error-bar")
-        .attr("visibility", function(d) { if (d.country != affectedCountries[i] || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
+        .attr("visibility", function(d) { if (d.country != currentCountry || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
+        // .attr("id", function(d) { return (d.country + " uid" + d.number) })
+        .attr("id", function(d) { return ("uid" + d.number) })
         .attr("x1", function(d) { return xScale(new Date(d.date)) })
         .attr("y1", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "maximum"))) })
         .attr("x2", function(d) { return xScale(new Date(d.date)) })
@@ -1209,40 +1222,86 @@ d3.json("data/drones.json", function(error, json) {
       .data(dataset).enter()
         .append("circle")
         .attr("class", "timeline")
-        .attr("visibility", function(d) { if (d.country != affectedCountries[i] || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
+        .attr("visibility", function(d) { if (d.country != currentCountry || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
         .attr("value", function(d) { return getIntegerFromString(d[currentDataType], "average") })
         .attr("date", function(d) { return d.date })
-        .attr("id", function(d) { return d.country })
-        .attr("cx", function(d) { return xScale(new Date(d.date)) })
+        // .attr("id", function(d) { return (d.country + " uid" + d.number) })
+        .attr("id", function(d) { return ("uid" + d.number) })
+        .attr("cx", function(d) { if (d.country == currentCountry && getIntegerFromString(d[currentDataType], "average") > 0) {dateArray[currentCountry].push([xScale(new Date(d.date)), "uid" + d.number]);} return xScale(new Date(d.date)) })
         .attr("cy", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "average"))) })
         .attr("r", function(d) { return 2 })
 
     // Get rid of hidden strikes
     currentTimeline.selectAll("circle[visibility = hidden]").remove()
     currentTimeline.selectAll("line[visibility = hidden]").remove()
-
-    // TODO make tooltips work, make axes interactive
+    
     currentTimeline
       .append("rect")
-      .attr("class", "overlay")
-      .attr("width", timelineWidth)
-      .attr("height", timelineHeight)
-      .attr("opacity", 0)
-      .on("mouseover", highlightNearestNode)
-      .on("mousemove", highlightNearestNode)
+        .attr("id", currentCountry)
+        .attr("class", "overlay")
+        .attr("width", timelineWidth)
+        .attr("height", timelineHeight)
+        .attr("opacity", 0)
+        .on("mouseover", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
+        .on("mousemove", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
+        .on("mouseout", function(d) { resetOpacity($(this).parent().attr("id")) })
   }
 
 })
+
+d3.selectAll(".timeline#Pakistan > circle.timeline")[0][0]
 
 $(".data-type-selector").change(function() {
   redrawTimelines()
   redrawMinimaps()
 })
 
-function highlightNearestNode() {
-  var cursorX = d3.mouse(this)[0]
-  
+function test(input) {
+  console.log(input);
 }
+
+// TODO doesn't work for other data-types aside from deaths
+// this esp doesn't work for somalia?
+// i think it's because of the way i've structured dateArray, which assumes that all the nodes are visible
+// TODO create separate dateArrays for each dataType?
+// TODO or have the .each function check if it's the correct dataType?
+function highlightNearestNode(mousePosition, country) {
+  var xPosition = mousePosition[0],
+      closest = null,
+      closestId = null,
+      suppressedOpacity = 0.01
+
+  $.each(dateArray[country], function(){
+    if (closest == null || Math.abs(this[0] - xPosition) < Math.abs(closest - xPosition)) {
+      closest = this[0]
+      closestId = this[1]
+    }
+  })
+
+  d3.selectAll("svg.timeline#" + country + " > circle.timeline").style("opacity", 0.05)
+  d3.selectAll("svg.timeline#" + country + " > line.error-bar").style("opacity", 0.05)
+  d3.selectAll("svg.timeline-map#" + country + " > circle.strike").style("opacity", 0.01)
+
+  d3.select("circle.timeline#" + closestId).style("opacity", 1)
+  d3.select("line.error-bar#" + closestId).style("opacity", 0.5)
+  d3.select("circle.strike#" + closestId).style("opacity", 1)
+}
+
+function resetOpacity(country) {
+  d3.selectAll("svg.timeline#" + country + " > circle.timeline").style("opacity", 1)
+  d3.selectAll("svg.timeline#" + country + " > line.error-bar").style("opacity", 0.5)
+  d3.selectAll("svg.timeline-map#" + country + " > circle.strike").style("opacity", 0.2)
+}
+
+var theArray = [ 1, 3, 8, 10, 13 ];
+var goal = 4;
+var closest = null;
+
+$.each(theArray, function(){
+  if (closest == null || Math.abs(this - goal) < Math.abs(closest - goal)) {
+    closest = this;
+  }
+});
 
 function redrawTimelines() {
 
@@ -1292,7 +1351,7 @@ function redrawTimelines() {
         .data(dataset).enter()
           .append("line")
           .attr("class", "error-bar")
-          // .attr("id", function(d) { return d.country })
+          .attr("id", function(d) { return ("uid" + d.number )})
           .attr("visibility", function(d) { if (d.country != affectedCountries[i] || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
           .attr("x1", function(d) { return xScale(new Date(d.date)) })
           .attr("y1", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "maximum"))) })
@@ -1304,10 +1363,10 @@ function redrawTimelines() {
         .data(dataset).enter()
           .append("circle")
           .attr("class", "timeline")
+          .attr("id", function(d) { return ("uid" + d.number) })
           .attr("visibility", function(d) { if (d.country != affectedCountries[i] || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
           .attr("value", function(d) { return getIntegerFromString(d[currentDataType], "average") })
           .attr("date", function(d) { return d.date })
-          .attr("id", function(d) { return d.country })
           .attr("cx", function(d) { return xScale(new Date(d.date)) })
           .attr("cy", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "average"))) })
           .attr("r", function(d) { return 2 })
@@ -1325,8 +1384,8 @@ function redrawMinimaps() {
       defaultOpacity = 0.2
 
   var currentDataTypePakistan = $(".data-type-selector#Pakistan").val()
-  pakistan.selectAll("circle[deaths = yes]").style("opacity", 0)
-  // pakistan.selectAll("circle[deaths = yes]").addClass("not-applicable")
+  pakistan.selectAll("circle[deaths = yes]").style("display", "none")
+  pakistan.selectAll("circle[" + currentDataTypePakistan + " = yes]").style("display", null)
   pakistan.selectAll("circle[" + currentDataTypePakistan + " = yes]").style("opacity", defaultOpacity)
 
 
@@ -1334,6 +1393,8 @@ function redrawMinimaps() {
 
   var currentDataTypeYemen = $(".data-type-selector#Yemen").val()
   yemen.selectAll("circle[deaths = yes]").style("opacity", 0)
+  yemen.selectAll("circle[deaths = yes]").style("display", "none")
+  yemen.selectAll("circle[" + currentDataTypeYemen + " = yes]").style("display", null)
   yemen.selectAll("circle[" + currentDataTypeYemen + " = yes]").style("opacity", defaultOpacity)
 
 
@@ -1341,6 +1402,8 @@ function redrawMinimaps() {
 
   var currentDataTypeSomalia = $(".data-type-selector#Somalia").val()
   somalia.selectAll("circle[deaths = yes]").style("opacity", 0)
+  somalia.selectAll("circle[deaths = yes]").style("display", "none")
+  somalia.selectAll("circle[" + currentDataTypeSomalia + " = yes]").style("display", null)
   somalia.selectAll("circle[" + currentDataTypeSomalia + " = yes]").style("opacity", defaultOpacity)
 
 }
