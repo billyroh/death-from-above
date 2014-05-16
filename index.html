@@ -833,9 +833,9 @@ d3.json("data/drones.json", function(error, json) {
             .attr("r", 2)
             .attr("value", function(d) { return d.values["average"] })
             .attr("year", function(d) { return d.key })
-            .on("mouseover", function(d) { displayYear(d.key, xScale(d.key)) })
-            .on("mouseout", function(d) { resetYear() })
-            .on("mousemove", mousemoveAnnualSum)
+            // .on("mouseover", function(d) { displayYear(d.key, xScale(d.key)) })
+            // .on("mouseout", function(d) { resetYear() })
+            // .on("mousemove", mousemoveAnnualSum)
     }
   }
 
@@ -1204,6 +1204,19 @@ d3.json("data/drones.json", function(error, json) {
       .attr("transform", "translate(" + (timelineWidth + 30) + ",0)")
       .call(yAxis)
 
+    // Draw overlay
+    currentTimeline
+      .append("rect")
+        .attr("id", currentCountry)
+        .attr("class", "overlay")
+        .attr("width", timelineWidth)
+        .attr("height", timelineHeight)
+        // .attr("opacity", 0)
+        .attr("fill", "rgba(0,0,0,0)")
+        .on("mouseover", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
+        .on("mousemove", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
+        .on("mouseout", function(d) { resetOpacity($(this).parent().attr("id")) })
+
     // Error bars
     currentTimeline.selectAll("line")
       .data(dataset).enter()
@@ -1216,6 +1229,8 @@ d3.json("data/drones.json", function(error, json) {
         .attr("y1", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "maximum"))) })
         .attr("x2", function(d) { return xScale(new Date(d.date)) })
         .attr("y2", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "minimum"))) })
+        .on("mouseover", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
+        .on("mousemove", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
 
     // Draw circles
     currentTimeline.selectAll("circle")
@@ -1227,38 +1242,58 @@ d3.json("data/drones.json", function(error, json) {
         .attr("date", function(d) { return d.date })
         // .attr("id", function(d) { return (d.country + " uid" + d.number) })
         .attr("id", function(d) { return ("uid" + d.number) })
-        .attr("cx", function(d) { if (d.country == currentCountry && getIntegerFromString(d[currentDataType], "average") > 0) {dateArray[currentCountry].push([xScale(new Date(d.date)), "uid" + d.number]);} return xScale(new Date(d.date)) })
+        .attr("cx", function(d) { if (d.country == currentCountry && getIntegerFromString(d[currentDataType], "average") > 0) { dateArray[currentCountry].push(dateArrayFormatter(xScale(new Date(d.date)), d)) } return xScale(new Date(d.date)) })
         .attr("cy", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "average"))) })
         .attr("r", function(d) { return 2 })
+        .attr("injuries", function(d) { return d["injuries"] })
+        .attr("deaths", function(d) { return d["deaths"] })
+        .attr("civilians", function(d) { return d["civilians"] })
+        .attr("children", function(d) { return d["children"] })
+        .attr("summary", function(d) { return d["bij_summary_short"] })
+        .attr("link", function(d) { return d["bij_link"] })
+        .on("mouseover", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
+        .on("mousemove", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
+        .on("mouseout", function(d) { resetOpacity($(this).parent().attr("id")) })
+
 
     // Get rid of hidden strikes
     currentTimeline.selectAll("circle[visibility = hidden]").remove()
     currentTimeline.selectAll("line[visibility = hidden]").remove()
     
-    currentTimeline
-      .append("rect")
-        .attr("id", currentCountry)
-        .attr("class", "overlay")
-        .attr("width", timelineWidth)
-        .attr("height", timelineHeight)
-        .attr("opacity", 0)
-        .on("mouseover", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
-        .on("mousemove", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
-        .on("mouseout", function(d) { resetOpacity($(this).parent().attr("id")) })
   }
 
 })
 
-d3.selectAll(".timeline#Pakistan > circle.timeline")[0][0]
+function dateArrayFormatter(xValue, d) {
+  var number = "uid",
+      result = {},
+      tempArray = []
+
+  for (var i = 0; i < dataTypes.length; i++) {
+    var currentDataType = dataTypes[i]
+    if (getIntegerFromString(d[currentDataType], "average") > 0) {
+      tempArray.push("yes")
+    } else {
+      tempArray.push("no")
+    }
+  }
+
+  result = {
+    "xValue": xValue,
+    "uid": "uid" + d.number,
+    "injuries": tempArray[0],
+    "deaths": tempArray[1],
+    "children": tempArray[2],
+    "civilians": tempArray[3]
+  }
+
+  return result
+}
 
 $(".data-type-selector").change(function() {
   redrawTimelines()
   redrawMinimaps()
 })
-
-function test(input) {
-  console.log(input);
-}
 
 // TODO doesn't work for other data-types aside from deaths
 // this esp doesn't work for somalia?
@@ -1269,25 +1304,43 @@ function highlightNearestNode(mousePosition, country) {
   var xPosition = mousePosition[0],
       closest = null,
       closestId = null,
-      suppressedOpacity = 0.01
-
+      suppressedOpacity = 0.01,
+      currentDataType = $(".data-type-selector#" + country).val()
   $.each(dateArray[country], function(){
-    if (closest == null || Math.abs(this[0] - xPosition) < Math.abs(closest - xPosition)) {
-      closest = this[0]
-      closestId = this[1]
+    if (closest == null || Math.abs(this["xValue"] - xPosition) < Math.abs(closest - xPosition)) {
+      if (this[currentDataType] == "yes") {
+        closest = this["xValue"]
+        closestId = this["uid"]
+      }
     }
   })
 
+  highlightNode(closestId, country)
+}
+
+function highlightNode(id, country) {
   d3.selectAll("svg.timeline#" + country + " > circle.timeline").style("opacity", 0.05)
   d3.selectAll("svg.timeline#" + country + " > line.error-bar").style("opacity", 0.05)
   d3.selectAll("svg.timeline-map#" + country + " > circle.strike").style("opacity", 0.01)
 
-  d3.select("circle.timeline#" + closestId).style("opacity", 1)
-  d3.select("line.error-bar#" + closestId).style("opacity", 0.5)
-  d3.select("circle.strike#" + closestId).style("opacity", 1)
+  d3.select("circle.timeline#" + id).style("opacity", 1)
+  d3.select("line.error-bar#" + id).style("opacity", 0.5)
+  d3.select("circle.strike#" + id).style("opacity", 1)
+
+  // TODO make tooltips work
+  d3.select("circle.timeline#" + id)
+    .append("div")
+      .attr("class", "tooltip")
+      .attr("id", this.link)
+      .text(function(d) { console.log(this); return this.link})
+      .style("width", "300px")
+      .style("height", "300px")
+      .style("background-color", "black")
+      .style("position", "absolute")
 }
 
 function resetOpacity(country) {
+
   d3.selectAll("svg.timeline#" + country + " > circle.timeline").style("opacity", 1)
   d3.selectAll("svg.timeline#" + country + " > line.error-bar").style("opacity", 0.5)
   d3.selectAll("svg.timeline-map#" + country + " > circle.strike").style("opacity", 0.2)
@@ -1357,6 +1410,10 @@ function redrawTimelines() {
           .attr("y1", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "maximum"))) })
           .attr("x2", function(d) { return xScale(new Date(d.date)) })
           .attr("y2", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "minimum"))) })
+          .on("mouseover", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
+          .on("mousemove", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
+          .on("mouseout", function(d) { resetOpacity($(this).parent().attr("id")) })
+          .style("cursor", "default")
 
       // Draw circles
       currentTimeline.selectAll("circle")
@@ -1370,6 +1427,16 @@ function redrawTimelines() {
           .attr("cx", function(d) { return xScale(new Date(d.date)) })
           .attr("cy", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "average"))) })
           .attr("r", function(d) { return 2 })
+          .attr("injuries", function(d) { return d["injuries"] })
+          .attr("deaths", function(d) { return d["deaths"] })
+          .attr("civilians", function(d) { return d["civilians"] })
+          .attr("children", function(d) { return d["children"] })
+          .attr("summary", function(d) { return d["bij_summary_short"] })
+          .attr("link", function(d) { return d["bij_link"] })
+          .on("mouseover", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
+          .on("mousemove", function(d) { highlightNode($(this).attr("id"), $(this).parent().attr("id")) })
+          .on("mouseout", function(d) { resetOpacity($(this).parent().attr("id")) })
+          .style("cursor", "default")
 
       // Get rid of hidden strikes
       currentTimeline.selectAll("circle[visibility = hidden]").remove()
