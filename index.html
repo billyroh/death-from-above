@@ -27,7 +27,7 @@ h1, h2, h3 {
 }
 
 h1 {
-  /*font-family: 'Gotham SSm A', 'Gotham SSm B';*/
+  /*font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
   font-weight: 700;
   line-height: 44px;
   /*text-transform: uppercase;*/
@@ -36,17 +36,13 @@ h1 {
 }
 
 h2 {
-  /*font-family: 'Gotham SSm A', 'Gotham SSm B';*/
+  /*font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
   line-height: 35px;
   font-size: 24px;
   /*font-style: italic;*/
   font-weight: 700;
   font-weight: 300;
   margin-bottom: 14px;
-}
-
-h3 {
-  color: gray;
 }
 
 p {
@@ -76,6 +72,8 @@ a {
 }
 
 .by-line {
+  font-size: 20px;
+  line-height: 28px;
   color: gray;
 }
 
@@ -115,7 +113,7 @@ a {
 
 .data-type-label, .timeline-country-label {
   /*font-family: 'Sentinel SSm A', 'Sentinel SSm B';*/
-  /*font-family: 'Gotham SSm A', 'Gotham SSm B';*/
+  /*font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
   /*text-transform: uppercase;*/
   font-weight: 700;
   margin-bottom: 10px;
@@ -125,7 +123,7 @@ a {
 
 /* Summary stuff */
 .value {
-  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   display: block;
   font-size: 28px;
   margin: 9px 0 10px 0;
@@ -140,7 +138,7 @@ a {
   margin: 0 22px 20px 0px;
   font-size: 16px;
   color: gray;
-  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   /*padding-top: 10px;
   border-top: 1px solid;*/
@@ -159,6 +157,8 @@ circle.sparkline, circle.timeline {
   stroke-width: 2px;
   stroke-linecap: round;
   stroke-linejoin: round;
+  -webkit-transition: all 100ms;
+  transition: all 100ms;
 }
 
 circle.sparkline#Yemen {
@@ -180,6 +180,8 @@ line.error-bar, line.connector {
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0.5;
+  -webkit-transition: all 100ms;
+  transition: all 100ms;
 }
 
 line.connector {
@@ -239,14 +241,8 @@ circle.strike, circle.timeline-circle {
   fill: rgb(200, 18, 18);
   opacity: 0.2;
   /*cursor: pointer;*/
-  -webkit-transition: all 150ms;
-  transition: all 150ms;
-}
-
-circle.not-shown {
-  opacity: 0;
-  -webkit-transition: all 150ms;
-  transition: all 150ms;
+  -webkit-transition: all 100ms;
+  transition: all 100ms;
 }
 
 .feature.active {
@@ -263,7 +259,7 @@ circle.not-shown {
 
 .country-name {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   fill: #000;
   opacity: 0.3;
   margin-left: -10px;
@@ -273,6 +269,38 @@ circle.not-shown {
 }
 
 /* Timeline stuff */ 
+
+.country-name-wrapper > h2 {
+  float: left;
+}
+
+.country-name {
+  display: block;
+}
+
+.data-type-selector {
+  /*display: block;*/
+  float: left;
+  padding: 4px;
+  -webkit-appearance: none;
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin: 22px 0 0 0;
+  color: gray;
+  /*border: none;*/
+  background: transparent;
+}
+
+.dropdown-triangle {
+  /*width: 0; 
+  height: 0; 
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid gray;
+  margin: 36px 0 0 -76px;
+  float: left;*/
+}
 
 .timeline-old {
   width: 100%;
@@ -327,8 +355,7 @@ circle.not-shown {
 }
 
 .axis text, text.axis {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 11px;
   cursor: default;
 }
@@ -341,21 +368,6 @@ circle.not-shown {
 circle.not-applicable {
   opacity: 0;
   /*display: none;*/
-}
-
-.data-type-selector {
-  display: block;
-  /*width: 240px;*/
-  /*height: 34px;*/
-  padding: 8px;
-  /*overflow: hidden;*/
-  background: transparent;
-  -webkit-appearance: none;
-  /*font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, "Times New Roman", serif;*/
-  font-family: 'Gotham SSm A', 'Gotham SSm B';
-  text-transform: uppercase;
-  font-size: 16px;
-  margin-bottom: 12px;
 }
 
 /* Tooltip shit */
@@ -413,8 +425,7 @@ circle.not-applicable {
 }
 
 text {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-size: 10px;
   pointer-events: none;
@@ -486,12 +497,16 @@ svg.timeline-map {
 <div class="section" id="timeline-by-country">
   <div class="timeline-wrapper clearfix">
     <!-- <div class="timeline-country-label" id="Pakistan">Pakistan</div> -->
-    <h2>Pakistan</h2>
-    <select class="data-type-selector" id="Pakistan">
-      <option value="deaths">Total Deaths</option>
-      <option value="civilians">Civilian Deaths</option>
-      <option value="children">Child Deaths</option>
-    </select>
+    <div class="country-name-wrapper clearfix">
+      <h2>Pakistan — </h2>
+      <select class="data-type-selector" id="Pakistan">
+        <option value="injuries">Injuries</option>
+        <option value="deaths">Total Deaths</option>
+        <option value="civilians">Civilian Deaths</option>
+        <option value="children">Child Deaths</option>
+      </select>
+      <div class="dropdown-triangle" id="Pakistan"></div>
+    </div>
     <div class="summary">Date of Biggest Strike<span class="value">October 30, 2006</span> <span class="emphasis">82 people killed</span></div>
     <div class="summary">Year with most strikes<span class="value">2010</span>129 strikes</div>
     <svg class="timeline" id="Pakistan"></svg>
@@ -499,12 +514,16 @@ svg.timeline-map {
   </div>
   <div class="timeline-wrapper clearfix">
     <!-- <div class="timeline-country-label" id="Yemen">Yemen</div> -->
-    <h2>Yemen</h2>
-    <select class="data-type-selector" id="Yemen">
-      <option value="deaths">Total Deaths</option>
-      <option value="civilians">Civilian Deaths</option>
-      <option value="children">Child Deaths</option>
-    </select>
+    <div class="country-name-wrapper clearfix">
+      <h2>Yemen — </h2>
+      <select class="data-type-selector" id="Yemen">
+        <option value="injuries">Injuries</option>
+        <option value="deaths">Total Deaths</option>
+        <option value="civilians">Civilian Deaths</option>
+        <option value="children">Child Deaths</option>
+      </select>
+      <div class="dropdown-triangle" id="Yemen"></div>
+    </div>
     <div class="summary">Biggest strike<span class="value">July 1, 2012</span><span class="emphasis">6-80 people killed</span></div>
     <div class="summary">Year with most strikes<span class="value">2012</span>62 strikes</div>
     <svg class="timeline" id="Yemen"></svg>
@@ -512,12 +531,16 @@ svg.timeline-map {
   </div>
   <div class="timeline-wrapper clearfix">
     <!-- <div class="timeline-country-label" id="Somalia">Somalia</div> -->
-    <h2>Somalia</h2>
-    <select class="data-type-selector" id="Somalia">
-      <option value="deaths">Total Deaths</option>
-      <option value="civilians">Civilian Deaths</option>
-      <option value="children">Child Deaths</option>
-    </select>
+    <div class="country-name-wrapper clearfix">
+      <h2>Somalia — </h2>
+      <select class="data-type-selector" id="Somalia">
+        <option value="injuries">Injuries</option>
+        <option value="deaths">Total Deaths</option>
+        <option value="civilians">Civilian Deaths</option>
+        <option value="children">Child Deaths</option>
+      </select>
+      <div class="dropdown-triangle" id="Somalia"></div>      
+    </div>
     <div class="summary">Date of Biggest Strike<span class="value">October 23, 2011</span>11 people killed</div>
     <div class="summary">Year with most strikes<span class="value">2011</span>Five strikes</div>
     <svg class="timeline" id="Somalia"></svg>
@@ -920,6 +943,13 @@ var padding = {
     timelineHeight = $(".timeline").height()
 
 
+$(".dropdown-triangle").click(function() {
+  console.log(this);
+  // console.log($(this).);
+  console.log($(".data-type-selector#" + $(this).attr("id")));
+  $(".data-type-selector#" + $(this).attr("id")).trigger("click")
+})
+
 /*
       Draw mini-maps
 */
@@ -1003,6 +1033,7 @@ d3.json("data/pakistan.json", function(error, country) {
         .append("circle")
         .attr("class", "strike")
         .attr("id", function(d) { return "uid" + d.number })
+        .attr("injuries", function(d) { if (d.country == "Pakistan" && getIntegerFromString(d["injuries"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("deaths", function(d) { if (d.country == "Pakistan" && getIntegerFromString(d["deaths"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("civilians", function(d) { if (d.country == "Pakistan" && getIntegerFromString(d["civilians"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("children", function(d) { if (d.country == "Pakistan" && getIntegerFromString(d["children"], "average") > 0) { return "yes" } else { return "none" } })
@@ -1062,6 +1093,7 @@ d3.json("data/yemen.json", function(error, country) {
         .append("circle")
         .attr("class", "strike")
         .attr("id", function(d) { return "uid" + d.number })
+        .attr("injuries", function(d) { if (d.country == "Yemen" && getIntegerFromString(d["injuries"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("deaths", function(d) { if (d.country == "Yemen" && getIntegerFromString(d["deaths"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("civilians", function(d) { if (d.country == "Yemen" && getIntegerFromString(d["civilians"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("children", function(d) { if (d.country == "Yemen" && getIntegerFromString(d["children"], "average") > 0) { return "yes" } else { return "none" } })
@@ -1120,6 +1152,7 @@ d3.json("data/somalia.json", function(error, country) {
         .append("circle")
         .attr("class", "strike")
         .attr("id", function(d) { return "uid" + d.number })
+        .attr("injuries", function(d) { if (d.country == "Somalia" && getIntegerFromString(d["injuries"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("deaths", function(d) { if (d.country == "Somalia" && getIntegerFromString(d["deaths"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("civilians", function(d) { if (d.country == "Somalia" && getIntegerFromString(d["civilians"], "average") > 0) { return "yes" } else { return "none" } })
         .attr("children", function(d) { if (d.country == "Somalia" && getIntegerFromString(d["children"], "average") > 0) { return "yes" } else { return "none" } })
@@ -1295,11 +1328,7 @@ $(".data-type-selector").change(function() {
   redrawMinimaps()
 })
 
-// TODO doesn't work for other data-types aside from deaths
-// this esp doesn't work for somalia?
-// i think it's because of the way i've structured dateArray, which assumes that all the nodes are visible
-// TODO create separate dateArrays for each dataType?
-// TODO or have the .each function check if it's the correct dataType?
+// Get nearest node
 function highlightNearestNode(mousePosition, country) {
   var xPosition = mousePosition[0],
       closest = null,
@@ -1315,9 +1344,14 @@ function highlightNearestNode(mousePosition, country) {
     }
   })
 
+  if (country == "Somalia") {
+
+  }
+
   highlightNode(closestId, country)
 }
 
+// Highlight node
 function highlightNode(id, country) {
   d3.selectAll("svg.timeline#" + country + " > circle.timeline").style("opacity", 0.05)
   d3.selectAll("svg.timeline#" + country + " > line.error-bar").style("opacity", 0.05)
@@ -1329,14 +1363,15 @@ function highlightNode(id, country) {
 
   // TODO make tooltips work
   d3.select("circle.timeline#" + id)
-    .append("div")
+    .append("text")
       .attr("class", "tooltip")
       .attr("id", this.link)
-      .text(function(d) { console.log(this); return this.link})
-      .style("width", "300px")
-      .style("height", "300px")
-      .style("background-color", "black")
-      .style("position", "absolute")
+      .text(function(d) { console.log(this);return this.link})
+      // .style("width", 300)
+      // .style("height", 300)
+      // .style("background-color", "black")
+      // .style("position", "absolute")
+      .style("z-index", 15)
 }
 
 function resetOpacity(country) {
@@ -1356,6 +1391,8 @@ $.each(theArray, function(){
   }
 });
 
+
+// Redraws timelines when data-type-selector's value is changed
 function redrawTimelines() {
 
   d3.json("data/drones.json", function(error, json) {
@@ -1446,6 +1483,7 @@ function redrawTimelines() {
   })
 }
 
+// Redraws maps when data-type-selector's value is changed
 function redrawMinimaps() {
   var pakistan = d3.select(".timeline-map#Pakistan"),
       defaultOpacity = 0.2
