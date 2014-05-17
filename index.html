@@ -113,9 +113,6 @@ a {
 }
 
 .data-type-label, .timeline-country-label {
-  /*font-family: 'Sentinel SSm A', 'Sentinel SSm B';*/
-  /*font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
-  /*text-transform: uppercase;*/
   font-weight: 700;
   margin-bottom: 10px;
   color: gray;
@@ -129,8 +126,6 @@ a {
   font-size: 28px;
   margin: 9px 0 10px 0;
   color: #454545;
-  /*color: white;*/
-  /*font-weight: 700;*/
 }
 
 .summary {
@@ -151,9 +146,40 @@ a {
 
 /* Sparkline Legend */
 
+.legend-wrapper {
+
+}
+
 .legend {
-  width: 100%;
-  height: 50px;
+  float: left;
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin: 0 20px 0 0;
+}
+
+.legend-colour {
+  width: 14px;
+  height: 14px;
+  background-color: red;
+  float: left;
+}
+
+.legend#Pakistan > .legend-colour {
+  background-color: #BD2E35;
+}
+
+.legend#Yemen > .legend-colour {
+  background-color: #1b9e77;
+}
+
+.legend#Somalia > .legend-colour {
+  background-color: #7570b3;
+}
+
+.legend-name {
+  float: left;
+  margin: -5px 0 0 4px;
 }
 
 /* Sparkline Graph Stuff */
@@ -481,44 +507,100 @@ svg.timeline-map {
 <div class="section" id="annual-sums-by-country">
   <div class="sparkline-wrapper" id="injuries-wrapper">
     <h2>Total Injury Estimate</h2>
-    <!-- <div class="data-type-label">Total Injury Estimate</div> -->
-    <div class="summary" id="Pakistan">People injured in Pakistan<span class="value"></span></div>
-    <div class="summary" id="Yemen">People injured in Yemen<span class="value"></span></div>
-    <div class="summary" id="Somalia">People injured in Somalia<span class="value"></span></div>
-    <svg class="legend"></svg>
+    <div class="summary-wrapper clearfix">
+      <div class="summary" id="Pakistan">People injured in Pakistan<span class="value"></span></div>
+      <div class="summary" id="Yemen">People injured in Yemen<span class="value"></span></div>
+      <div class="summary" id="Somalia">People injured in Somalia<span class="value"></span></div>
+    </div>
+    <!-- there's a proper d3 way to do this but i'm dumb -->
+    <div class="legend-wrapper clearfix">
+      <div class="legend" id="Pakistan">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Pakistan</div>
+      </div>
+      <div class="legend" id="Yemen">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Yemen</div>
+      </div>
+      <div class="legend" id="Somalia">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Somalia</div>
+      </div>
+    </div>
     <svg class="sparkline" id="injuries"></svg>
   </div>
   <div class="sparkline-wrapper" id="deaths-wrapper">
     <h2>Total Death Estimate</h2>
-    <!-- <div class="data-type-label">Total Death Estimate</div> -->
-    <div class="summary" id="Pakistan">People killed in Pakistan<span class="value"></span></div>
-    <div class="summary" id="Yemen">People killed in Yemen<span class="value"></span></div>
-    <div class="summary" id="Somalia">People killed in Somalia<span class="value"></span></div>
-    <svg class="legend"></svg>
+    <div class="summary-wrapper clearfix">
+      <div class="summary" id="Pakistan">People killed in Pakistan<span class="value"></span></div>
+      <div class="summary" id="Yemen">People killed in Yemen<span class="value"></span></div>
+      <div class="summary" id="Somalia">People killed in Somalia<span class="value"></span></div>
+    </div>
+    <div class="legend-wrapper clearfix">
+      <div class="legend" id="Pakistan">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Pakistan</div>
+      </div>
+      <div class="legend" id="Yemen">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Yemen</div>
+      </div>
+      <div class="legend" id="Somalia">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Somalia</div>
+      </div>
+    </div>
     <svg class="sparkline" id="deaths"></svg>
   </div>
   <div class="sparkline-wrapper" id="civilians-wrapper">
-    <!-- <div class="data-type-label">Civilian Death Estimate</div> -->
     <h2>Civilian Death Estimate</h2>
-    <div class="summary" id="Pakistan">Civilians killed in Pakistan<span class="value"></span></div>
-    <div class="summary" id="Yemen"></span>Civilians killed in Yemen<span class="value"></span></div>
-    <div class="summary" id="Somalia">Civilians killed in Somalia<span class="value"></span></div>
-    <svg class="legend"></svg>
+    <div class="summary-wrapper clearfix">
+      <div class="summary" id="Pakistan">Civilians killed in Pakistan<span class="value"></span></div>
+      <div class="summary" id="Yemen"></span>Civilians killed in Yemen<span class="value"></span></div>
+      <div class="summary" id="Somalia">Civilians killed in Somalia<span class="value"></span></div>
+    </div>
+    <div class="legend-wrapper clearfix">
+      <div class="legend" id="Pakistan">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Pakistan</div>
+      </div>
+      <div class="legend" id="Yemen">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Yemen</div>
+      </div>
+      <div class="legend" id="Somalia">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Somalia</div>
+      </div>
+    </div>
     <svg class="sparkline" id="civilians"></svg>
   </div>
   <div class="sparkline-wrapper" id="children-wrapper">
-    <!-- <div class="data-type-label">Child Death Estimate</div> -->
     <h2>Child Death Estimate</h2>
-    <div class="summary" id="Pakistan">Children killed in Pakistan<span class="value"></span></div>
-    <div class="summary" id="Yemen">Children killed in Yemen<span class="value"></span></div>
-    <div class="summary" id="Somalia">Children killed in Somalia<span class="value"></span></div>
-    <svg class="legend"></svg>
+    <div class="summary-wrapper clearfix">
+      <div class="summary" id="Pakistan">Children killed in Pakistan<span class="value"></span></div>
+      <div class="summary" id="Yemen">Children killed in Yemen<span class="value"></span></div>
+      <div class="summary" id="Somalia">Children killed in Somalia<span class="value"></span></div>
+    </div>
+    <div class="legend-wrapper clearfix">
+      <div class="legend" id="Pakistan">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Pakistan</div>
+      </div>
+      <div class="legend" id="Yemen">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Yemen</div>
+      </div>
+      <div class="legend" id="Somalia">        
+        <div class="legend-colour"></div>
+        <div class="legend-name">Somalia</div>
+      </div>
+    </div>
     <svg class="sparkline" id="children"></svg>
   </div>
 </div>
 <div class="section" id="timeline-by-country">
   <div class="timeline-wrapper clearfix">
-    <!-- <div class="timeline-country-label" id="Pakistan">Pakistan</div> -->
     <div class="country-name-wrapper clearfix">
       <h2>Pakistan — </h2>
       <select class="data-type-selector" id="Pakistan">
@@ -554,7 +636,6 @@ svg.timeline-map {
     <svg class="timeline-map" id="Yemen"></svg>
   </div>
   <div class="timeline-wrapper clearfix">
-    <!-- <div class="timeline-country-label" id="Somalia">Somalia</div> -->
     <div class="country-name-wrapper clearfix">
       <h2>Somalia — </h2>
       <select class="data-type-selector" id="Somalia">
@@ -577,16 +658,6 @@ svg.timeline-map {
   <br />
   Get live updates at <a href="https://twitter.com/dronestream">@dronestream</a>
 </div>
-<!-- </div>
-<div class="data-type-selector-wrapper">
-  <select class="data-type-selector">
-    <option class="data-type" value="deaths_max" selected="selected">Maximum Death Estimate</option>
-    <option class="data-type" value="deaths_min">Minimum Death Estimate</option>
-    <option class="data-type" value="civilians">Civilians</option>
-    <option class="data-type" value="children">Children</option>
-    <option class="data-type" value="injuries">Injuries</option>
-  </select>
-</div> -->
 <!-- <div class="section" id="map-section">
   <h2>Geography</h2>
   <p>Hover over the timeline to learn about each individual strike. You can also click on the strikes to zoom into each region.</p>
@@ -724,8 +795,8 @@ d3.json("data/drones.json", function(error, json) {
       if (value < 10) {
         value = numbersWrittenOut[value]
       }
-      var currentText = $("#" + dataTypes[i] + "-wrapper>.summary#" + annualSums[dataTypes[i]][j].key + ">.value").text()
-      $("#" + dataTypes[i] + "-wrapper>.summary#" + annualSums[dataTypes[i]][j].key + ">.value").text(value + currentText)
+      var currentText = $("#" + dataTypes[i] + "-wrapper>.summary-wrapper>.summary#" + annualSums[dataTypes[i]][j].key + ">.value").text()
+      $("#" + dataTypes[i] + "-wrapper>.summary-wrapper>.summary#" + annualSums[dataTypes[i]][j].key + ">.value").text(value + currentText)
     }
   }
 
