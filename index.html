@@ -4,15 +4,28 @@
 <head>
 <title>Death from Above</title>
 <link rel="stylesheet" type="text/css" href="//cloud.typography.com/7886252/756864/css/fonts.css" />
+
+<meta property="og:title" content="Death from Above"/>
+<meta name="description" content="Mapping injuries and deaths from US drone strikes">
+<meta property="og:description" content="Mapping injuries and deaths from US drone strikes">
+<meta property="og:image" content="http://deathfromabove.co/illustration-02.png" />
+<meta property="og:url" content="http://deathfromabove.co" />
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@dronestream">
+<meta name="twitter:creator" content="@billyroh">
+<meta name="twitter:title" content="Death from Above">
+<meta name="twitter:description" content="Mapping injuries and deaths from US drone strikes">
+<meta name="twitter:image:src" content="http://deathfromabove.co/illustration-02.png">
 <style>
 
 body {
   font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, "Times New Roman", serif;
   color: #454545;
   margin: 0 auto;
-  padding: 20px 20px 60px 20px;
+  padding: 20px 15px 60px 15px;
   max-width: 945px;
-  min-width: 300px;
+  min-width: 290px;
   /*width: 320px;*/
   font-size: 18px;
   line-height: 25px;
@@ -30,6 +43,7 @@ h1 {
   /*font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
   font-weight: 700;
   line-height: 44px;
+  margin-top: 0;
   /*text-transform: uppercase;*/
   font-variant: small-caps;
   /*font-weight: 300;*/
@@ -66,16 +80,22 @@ a {
 }
 
 .section {
-  padding-bottom: 30px;
-  /*border-bottom: 1px solid;*/
-
+  padding: 20px 0 36px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.by-line {
+#intro > h2 {
+  margin-bottom: 4px;
+}
+
+.by-line, .footer {
   font-size: 20px;
   line-height: 28px;
   color: gray;
-  margin-top: -5px;
+}
+
+.footer {
+  padding-top: 50px;
 }
 
 /* Sparklines */
@@ -147,7 +167,7 @@ a {
 /* Sparkline Legend */
 
 .legend-wrapper {
-
+  margin-top: 10px;
 }
 
 .legend {
@@ -313,16 +333,16 @@ circle.strike, circle.timeline-circle {
 }
 
 .data-type-selector {
-  /*display: block;*/
+  display: block;
   float: left;
-  padding: 4px;
+  padding: 8px;
   -webkit-appearance: none;
   font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-size: 16px;
-  margin: 27px 0 0 0;
+  margin: 0 0 10px 0;
   color: gray;
-  border: none;
+  border: 1px solid gray;
   background: transparent;
   /*position: absolute;*/
   z-index: 2;
@@ -334,9 +354,16 @@ circle.strike, circle.timeline-circle {
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   border-top: 6px solid gray;
-  margin: 37px 0 0 -100px;
+  margin: 16px 0 0 -20px;
   float: left;
+  z-index: 1;
   /*position: absolute;*/
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .dropdown-triangle {
+    margin: 16px 0 0 -25px;
+  }
 }
 
 .width-measurer {
@@ -367,7 +394,7 @@ circle.strike, circle.timeline-circle {
 }
 
 .timeline-wrapper {
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .timeline-wrapper {
@@ -497,14 +524,24 @@ svg.timeline-map {
 
 
 </style>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-51089466-1', 'deathfromabove.co');
+  ga('send', 'pageview');
+
+</script>
 </head>
 <body>
-<div class="section" id="intro">
+<div class="section clearfix" id="intro">
   <h1>Death from Above</h1>
   <h2>Mapping injuries and deaths from US drone strikes<br /></h2>
-  <div class="by-line">Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
+  <div class="by-line">Data from <a href="http://dronestre.am">dronestre.am</a></div>
 </div>
-<div class="section" id="annual-sums-by-country">
+<div class="section clearfix" id="annual-sums-by-country">
   <div class="sparkline-wrapper" id="injuries-wrapper">
     <h2>Total Injury Estimate</h2>
     <div class="summary-wrapper clearfix">
@@ -599,28 +636,29 @@ svg.timeline-map {
     <svg class="sparkline" id="children"></svg>
   </div>
 </div>
-<div class="section" id="timeline-by-country">
+<div class="section clearfix" id="timeline-by-country">
   <div class="timeline-wrapper clearfix">
-    <div class="country-name-wrapper clearfix">
-      <h2>Pakistan — </h2>
-      <select class="data-type-selector" id="Pakistan">
+    <!-- <div class="country-name-wrapper clearfix"> -->
+    <h2>Pakistan</h2>
+    <div class="clearfix">
+      <select class="data-type-selector clearfix" id="Pakistan">
         <option value="injuries">Injuries</option>
         <option value="deaths">Total Deaths</option>
         <option value="civilians">Civilian Deaths</option>
         <option value="children">Child Deaths</option>
       </select>
       <div class="dropdown-triangle" id="Pakistan"></div>
-      <span class="width-measurer" id="Pakistan"></span>
     </div>
+    <span class="width-measurer" id="Pakistan"></span>
+    <!-- </div> -->
     <div class="summary">Date of Biggest Strike<span class="value">October 30, 2006</span> <span class="emphasis">82 people killed</span></div>
     <div class="summary">Year with most strikes<span class="value">2010</span>129 strikes</div>
     <svg class="timeline" id="Pakistan"></svg>
     <svg class="timeline-map" id="Pakistan"></svg>
   </div>
   <div class="timeline-wrapper clearfix">
-    <!-- <div class="timeline-country-label" id="Yemen">Yemen</div> -->
-    <div class="country-name-wrapper clearfix">
-      <h2>Yemen — </h2>
+    <h2>Yemen</h2>
+    <div class="clearfix">
       <select class="data-type-selector" id="Yemen">
         <option value="injuries">Injuries</option>
         <option value="deaths">Total Deaths</option>
@@ -628,25 +666,25 @@ svg.timeline-map {
         <option value="children">Child Deaths</option>
       </select>
       <div class="dropdown-triangle" id="Yemen"></div>
-      <span class="width-measurer" id="Yemen"></span>
     </div>
+    <span class="width-measurer" id="Yemen"></span>
+    <!-- </div> -->
     <div class="summary">Biggest strike<span class="value">July 1, 2012</span><span class="emphasis">6-80 people killed</span></div>
     <div class="summary">Year with most strikes<span class="value">2012</span>62 strikes</div>
     <svg class="timeline" id="Yemen"></svg>
     <svg class="timeline-map" id="Yemen"></svg>
   </div>
   <div class="timeline-wrapper clearfix">
-    <div class="country-name-wrapper clearfix">
-      <h2>Somalia — </h2>
-      <select class="data-type-selector" id="Somalia">
+    <h2>Somalia</h2>
+    <div class="clearfix">
+      <select class="data-type-selector clearfix" id="Somalia">
         <option value="injuries">Injuries</option>
         <option value="deaths">Total Deaths</option>
         <option value="civilians">Civilian Deaths</option>
-        <option value="children">Child Deaths</option>
       </select>
       <div class="dropdown-triangle" id="Somalia"></div>
-      <span class="width-measurer" id="Somalia"></span>
     </div>
+    <span class="width-measurer" id="Somalia"></span>
     <div class="summary">Date of Biggest Strike<span class="value">October 23, 2011</span>11 people killed</div>
     <div class="summary">Year with most strikes<span class="value">2011</span>Five strikes</div>
     <svg class="timeline" id="Somalia"></svg>
@@ -654,9 +692,7 @@ svg.timeline-map {
   </div>
 </div>
 <div class="footer">
-  Learn more at <a href="http://www.livingunderdrones.org/">Living Under Drones</a>
-  <br />
-  Get live updates at <a href="https://twitter.com/dronestream">@dronestream</a>
+  Learn more at <a href="http://www.livingunderdrones.org/">Living Under Drones</a> · Get live updates at <a href="https://twitter.com/dronestream">@dronestream</a> · Designed by <a href="https://twitter.com/billyroh">@billyroh</a>
 </div>
 <!-- <div class="section" id="map-section">
   <h2>Geography</h2>
@@ -693,7 +729,7 @@ var sparklineWidth = $(".sparkline").width(),
       "top": 20,
       "right": 20,
       "bottom": 20,
-      "left": 40
+      "left": 20
     }
 
 // Create containers for the annual sums
@@ -842,9 +878,19 @@ d3.json("data/drones.json", function(error, json) {
     "children": [],
     },
       xAxis,
-      xScale = d3.scale.linear()
-        .domain([2002, 2014])
-        .range([0, $(".sparkline").width()])
+      xScale = d3.time.scale()
+        .domain([new Date("2002"), new Date("2014")])
+        .range([padding.left, sparklineWidth - padding.right])
+
+      xAxis = d3.svg.axis()
+          .scale(xScale)
+          .orient("bottom")
+          .ticks(6)
+
+      d3.selectAll(".sparkline").append("g")
+          .attr("class", "axis")
+           .attr("transform", "translate(0," + (sparklineHeight) + ")")
+          .call(xAxis)
 
   // Calculate and draw y axes
   for (var i = 0; i < dataTypes.length; i++) {
@@ -854,16 +900,16 @@ d3.json("data/drones.json", function(error, json) {
           .scale(yScale[dataTypes[i]])
           .orient("left")
           .ticks(6)
-          .tickSize(sparklineWidth)
+          .tickSize(sparklineWidth - padding.left - padding.right)
 
         var currentSelector = selector[dataTypes[i]]
           .append("g").call(yAxis[dataTypes[i]])
         
-        currentSelector.attr("transform", "translate(" + (sparklineWidth) + "," + padding.top + ")")
+        currentSelector.attr("transform", "translate(" + (sparklineWidth - 10 ) + "," + padding.top + ")")
           .attr("class", "y axis")
 
         currentSelector.selectAll("text")
-          .attr("x", (-1 * sparklineWidth) + padding.left + 3)
+          .attr("x", (-1 * sparklineWidth) + padding.left + padding.right - 7)
           .attr("text-align", "left")
 
         if (j != affectedCountries.length - 1) {
@@ -873,46 +919,20 @@ d3.json("data/drones.json", function(error, json) {
       }
   }
 
-  var sparkline = d3.selectAll(".sparkline")
+  // // TODO make tooltips work, make axes interactive
+  // sparkline
+  //   .append("rect")
+  //   .attr("class", "overlay")
+  //   .attr("width", sparklineWidth)
+  //   .attr("height", sparklineHeight)
+  //   .attr("opacity", 0)
+  //   .on("mouseover", dummy)
+  //   .on("mousemove", dummy)
 
-  // Draw x axes
-  sparkline
-    .append("line")
-    .attr("class", "x axis")
-    .attr("x1", 0)
-    .attr("y1", sparklineHeight)
-    .attr("x2", sparklineWidth)
-    .attr("y2", sparklineHeight)
-
-  sparkline
-    .append("text")
-    .attr("class", "axis start-date")
-    .attr("x", 0)
-    .attr("y", sparklineHeight + padding.bottom - 3)
-    .text("2002")
-
-  sparkline
-    .append("text")
-    .attr("class", "axis end-date")
-    .attr("x", sparklineWidth - padding.left - padding.right + 12)
-    .attr("y", sparklineHeight + padding.bottom - 3)
-    .text("2014")
-
-
-  // TODO make tooltips work, make axes interactive
-  sparkline
-    .append("rect")
-    .attr("class", "overlay")
-    .attr("width", sparklineWidth)
-    .attr("height", sparklineHeight)
-    .attr("opacity", 0)
-    .on("mouseover", dummy)
-    .on("mousemove", dummy)
-
-  function dummy() {
-    // console.log("hi");
-    // console.log(d3.mouse(this));
-  }
+  // function dummy() {
+  //   // console.log("hi");
+  //   // console.log(d3.mouse(this));
+  // }
 
   // Put each country annual sum data into graph, separate by dataType
   for (var dataTypesIndex = 0; dataTypesIndex < dataTypes.length; dataTypesIndex++) {
@@ -926,9 +946,9 @@ d3.json("data/drones.json", function(error, json) {
           .append("line")
             .attr("class", "connector")
             .attr("id", annualSums[dataTypes[dataTypesIndex]][affectedCountriesIndex].key)
-            .attr("x1", function(d, i) { if (parseFloat(d.key) == 2014) { return -100 }; return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
+            .attr("x1", function(d, i) { return xScale(new Date(d.key)) })
             .attr("y1", function(d, i) { if (parseFloat(d.key) == 2014) { return -100 }; return currentYScale(d.values["average"]) + padding.top })
-            .attr("x2", function(d, i) { if (parseFloat(d.key) == 2014) { return -100 }; return (parseFloat(d.key) - 2002 + 1) * circleSpacing + 3 })
+            .attr("x2", function(d, i) { return xScale(new Date((parseFloat(d.key) + 1).toString())) })
             .attr("y2", function(d, i) { if (parseFloat(d.key) == 2014) { return -100 }; return currentYScale(annualSums[dataTypes[dataTypesIndex]][affectedCountriesIndex].values[i + 1].values["average"]) + padding.top })
 
       // Draw error bars
@@ -938,8 +958,10 @@ d3.json("data/drones.json", function(error, json) {
             .attr("class", "error-bar")
             .attr("id", annualSums[dataTypes[dataTypesIndex]][affectedCountriesIndex].key)
             .attr("x1", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
+            .attr("x1", function(d, i) { return xScale(new Date(d.key)) })
             .attr("y1", function(d) { return currentYScale(d.values["maximum"]) + padding.top })
             .attr("x2", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
+            .attr("x2", function(d, i) { return xScale(new Date(d.key)) })
             .attr("y2", function(d) { return currentYScale(d.values["minimum"]) + padding.top })
 
       // Draw circles
@@ -949,6 +971,7 @@ d3.json("data/drones.json", function(error, json) {
             .attr("class", "sparkline")
             .attr("id", annualSums[dataTypes[dataTypesIndex]][affectedCountriesIndex].key)
             .attr("cx", function(d) { return (parseFloat(d.key) - 2002) * circleSpacing + 3 })
+            .attr("cx", function(d, i) { return xScale(new Date(d.key)) })
             .attr("cy", function(d) { return currentYScale(d.values["average"]) + padding.top })
             .attr("r", 2)
             .attr("value", function(d) { return d.values["average"] })
@@ -981,7 +1004,6 @@ function resetYear() {
 
 function mousemoveAnnualSum() {
   // var x0 = x.invert(d3.mouse(this)[0])
-
 }
 
 // Get the maximum value from annualSums per dataType (deaths, civilians, children)
@@ -1032,9 +1054,9 @@ function getIntegerFromString(input, operation) {
 
 var padding = {
       "top": 20,
-      "right": 20,
+      "right": 10,
       "bottom": 20,
-      "left": 20
+      "left": 40
     },
     timelineWidth = $(".timeline").width(),
     timelineHeight = $(".timeline").height()
@@ -1275,6 +1297,9 @@ var dateArray = {
   }
 
 d3.json("data/drones.json", function(error, json) {
+
+  redrawDropdown()
+
   var dataset = json.strike,
       yScale,
       xScale,
@@ -1327,11 +1352,11 @@ d3.json("data/drones.json", function(error, json) {
       .scale(currentYScale)
       .orient("left")
       .ticks(5)
-      .tickSize(timelineWidth)
+      .tickSize(timelineWidth - padding.left - 10)
 
     currentTimeline.append("g")
       .attr("class", "y axis")
-      .attr("transform", "translate(" + (timelineWidth + 30) + ",0)")
+      .attr("transform", "translate(" + (timelineWidth - 10) + ",0)")
       .call(yAxis)
 
     // Draw overlay
@@ -1420,8 +1445,6 @@ function dateArrayFormatter(xValue, d) {
   return result
 }
 
-redrawDropdown()
-
 $(".data-type-selector").change(function() {
   redrawDropdown()
   redrawTimelines()
@@ -1429,6 +1452,7 @@ $(".data-type-selector").change(function() {
 })
 
 function redrawDropdown() {
+  console.log("redraw");
   for (var i = 0; i < affectedCountries.length; i++) {
     var selector = $(".data-type-selector#" + affectedCountries[i])
         value = selector.val()
@@ -1442,7 +1466,7 @@ function redrawDropdown() {
       value = "Injuries"
     }
     $(".width-measurer#" + affectedCountries[i]).html(value);
-    selector.width($(".width-measurer#" + affectedCountries[i]).width() + 100);  
+    selector.width($(".width-measurer#" + affectedCountries[i]).width() + 25);  
   }
 }
 
