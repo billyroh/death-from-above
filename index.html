@@ -75,6 +75,7 @@ a {
   font-size: 20px;
   line-height: 28px;
   color: gray;
+  margin-top: -5px;
 }
 
 /* Sparklines */
@@ -135,7 +136,7 @@ a {
 .summary {
   float: left;
   width: 300px;
-  margin: 0 22px 20px 0px;
+  margin: 6px 22px 20px 0px;
   font-size: 16px;
   color: gray;
   font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -148,6 +149,13 @@ a {
   margin-right: 0;
 }
 
+/* Sparkline Legend */
+
+.legend {
+  width: 100%;
+  height: 50px;
+}
+
 /* Sparkline Graph Stuff */
 
 circle.sparkline, circle.timeline {
@@ -157,8 +165,8 @@ circle.sparkline, circle.timeline {
   stroke-width: 2px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  -webkit-transition: all 100ms;
-  transition: all 100ms;
+  -webkit-transition: all 80ms;
+  transition: all 80ms;
 }
 
 circle.sparkline#Yemen {
@@ -166,7 +174,7 @@ circle.sparkline#Yemen {
 }
 
 circle.sparkline#Pakistan {
-  stroke: #d95f02;
+  stroke: #BD2E35;
 }
 
 circle.sparkline#Somalia {
@@ -180,8 +188,8 @@ line.error-bar, line.connector {
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0.5;
-  -webkit-transition: all 100ms;
-  transition: all 100ms;
+  -webkit-transition: all 80ms;
+  transition: all 80ms;
 }
 
 line.connector {
@@ -193,7 +201,7 @@ line.error-bar#Yemen, line.connector#Yemen {
 }
 
 line.error-bar#Pakistan, line.connector#Pakistan {
-  stroke: #d95f02;
+  stroke: #BD2E35;
 }
 
 line.error-bar#Somalia, line.connector#Somalia {
@@ -201,7 +209,7 @@ line.error-bar#Somalia, line.connector#Somalia {
 }
 
 svg.timeline > line.error-bar {
-  stroke: rgb(200, 18, 18);
+  stroke: #BD2E35;
 }
 
 line {
@@ -238,11 +246,11 @@ line.sparkline, line.sparkline-full {
 }
 
 circle.strike, circle.timeline-circle {
-  fill: rgb(200, 18, 18);
+  fill: #BD2E35;
   opacity: 0.2;
   /*cursor: pointer;*/
-  -webkit-transition: all 100ms;
-  transition: all 100ms;
+  -webkit-transition: all 80ms;
+  transition: all 80ms;
 }
 
 .feature.active {
@@ -286,20 +294,30 @@ circle.strike, circle.timeline-circle {
   font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-size: 16px;
-  margin: 22px 0 0 0;
+  margin: 27px 0 0 0;
   color: gray;
-  /*border: none;*/
+  border: none;
   background: transparent;
+  /*position: absolute;*/
+  z-index: 2;
 }
 
 .dropdown-triangle {
-  /*width: 0; 
+  width: 0; 
   height: 0; 
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   border-top: 6px solid gray;
-  margin: 36px 0 0 -76px;
-  float: left;*/
+  margin: 37px 0 0 -100px;
+  float: left;
+  /*position: absolute;*/
+}
+
+.width-measurer {
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  display: none;
+  text-transform: uppercase;
 }
 
 .timeline-old {
@@ -458,7 +476,7 @@ svg.timeline-map {
 <div class="section" id="intro">
   <h1>Death from Above</h1>
   <h2>Mapping injuries and deaths from US drone strikes<br /></h2>
-  <div class="by-line">Data pulled from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
+  <div class="by-line">Data from <a href="http://dronestre.am">dronestre.am</a> · Design by <a href="https://twitter.com/billyroh">@billyroh</a></div>
 </div>
 <div class="section" id="annual-sums-by-country">
   <div class="sparkline-wrapper" id="injuries-wrapper">
@@ -467,6 +485,7 @@ svg.timeline-map {
     <div class="summary" id="Pakistan">People injured in Pakistan<span class="value"></span></div>
     <div class="summary" id="Yemen">People injured in Yemen<span class="value"></span></div>
     <div class="summary" id="Somalia">People injured in Somalia<span class="value"></span></div>
+    <svg class="legend"></svg>
     <svg class="sparkline" id="injuries"></svg>
   </div>
   <div class="sparkline-wrapper" id="deaths-wrapper">
@@ -475,6 +494,7 @@ svg.timeline-map {
     <div class="summary" id="Pakistan">People killed in Pakistan<span class="value"></span></div>
     <div class="summary" id="Yemen">People killed in Yemen<span class="value"></span></div>
     <div class="summary" id="Somalia">People killed in Somalia<span class="value"></span></div>
+    <svg class="legend"></svg>
     <svg class="sparkline" id="deaths"></svg>
   </div>
   <div class="sparkline-wrapper" id="civilians-wrapper">
@@ -482,7 +502,8 @@ svg.timeline-map {
     <h2>Civilian Death Estimate</h2>
     <div class="summary" id="Pakistan">Civilians killed in Pakistan<span class="value"></span></div>
     <div class="summary" id="Yemen"></span>Civilians killed in Yemen<span class="value"></span></div>
-    <div class="summary" id="Somalia">Civliians killed in Somalia<span class="value"></span></div>
+    <div class="summary" id="Somalia">Civilians killed in Somalia<span class="value"></span></div>
+    <svg class="legend"></svg>
     <svg class="sparkline" id="civilians"></svg>
   </div>
   <div class="sparkline-wrapper" id="children-wrapper">
@@ -491,6 +512,7 @@ svg.timeline-map {
     <div class="summary" id="Pakistan">Children killed in Pakistan<span class="value"></span></div>
     <div class="summary" id="Yemen">Children killed in Yemen<span class="value"></span></div>
     <div class="summary" id="Somalia">Children killed in Somalia<span class="value"></span></div>
+    <svg class="legend"></svg>
     <svg class="sparkline" id="children"></svg>
   </div>
 </div>
@@ -506,6 +528,7 @@ svg.timeline-map {
         <option value="children">Child Deaths</option>
       </select>
       <div class="dropdown-triangle" id="Pakistan"></div>
+      <span class="width-measurer" id="Pakistan"></span>
     </div>
     <div class="summary">Date of Biggest Strike<span class="value">October 30, 2006</span> <span class="emphasis">82 people killed</span></div>
     <div class="summary">Year with most strikes<span class="value">2010</span>129 strikes</div>
@@ -523,6 +546,7 @@ svg.timeline-map {
         <option value="children">Child Deaths</option>
       </select>
       <div class="dropdown-triangle" id="Yemen"></div>
+      <span class="width-measurer" id="Yemen"></span>
     </div>
     <div class="summary">Biggest strike<span class="value">July 1, 2012</span><span class="emphasis">6-80 people killed</span></div>
     <div class="summary">Year with most strikes<span class="value">2012</span>62 strikes</div>
@@ -539,7 +563,8 @@ svg.timeline-map {
         <option value="civilians">Civilian Deaths</option>
         <option value="children">Child Deaths</option>
       </select>
-      <div class="dropdown-triangle" id="Somalia"></div>      
+      <div class="dropdown-triangle" id="Somalia"></div>
+      <span class="width-measurer" id="Somalia"></span>
     </div>
     <div class="summary">Date of Biggest Strike<span class="value">October 23, 2011</span>11 people killed</div>
     <div class="summary">Year with most strikes<span class="value">2011</span>Five strikes</div>
@@ -549,6 +574,7 @@ svg.timeline-map {
 </div>
 <div class="footer">
   Learn more at <a href="http://www.livingunderdrones.org/">Living Under Drones</a>
+  <br />
   Get live updates at <a href="https://twitter.com/dronestream">@dronestream</a>
 </div>
 <!-- </div>
@@ -1323,10 +1349,31 @@ function dateArrayFormatter(xValue, d) {
   return result
 }
 
+redrawDropdown()
+
 $(".data-type-selector").change(function() {
+  redrawDropdown()
   redrawTimelines()
   redrawMinimaps()
 })
+
+function redrawDropdown() {
+  for (var i = 0; i < affectedCountries.length; i++) {
+    var selector = $(".data-type-selector#" + affectedCountries[i])
+        value = selector.val()
+    if (value == "deaths") {
+      value = "Total Deaths"
+    } else if (value == "civilians") {
+      value = "Civilian Deaths"
+    } else if (value == "children") {
+      value = "Child Deaths"
+    } else if (value == "injuries") {
+      value = "Injuries"
+    }
+    $(".width-measurer#" + affectedCountries[i]).html(value);
+    selector.width($(".width-measurer#" + affectedCountries[i]).width() + 100);  
+  }
+}
 
 // Get nearest node
 function highlightNearestNode(mousePosition, country) {
