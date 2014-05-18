@@ -294,7 +294,6 @@ line.sparkline, line.sparkline-full {
 circle.strike, circle.timeline-circle {
   fill: #BD2E35;
   opacity: 0.2;
-  /*cursor: pointer;*/
   -webkit-transition: all 80ms;
   transition: all 80ms;
 }
@@ -344,7 +343,6 @@ circle.strike, circle.timeline-circle {
   color: gray;
   border: 1px solid gray;
   background: transparent;
-  /*position: absolute;*/
   z-index: 2;
 }
 
@@ -357,7 +355,6 @@ circle.strike, circle.timeline-circle {
   margin: 16px 0 0 -20px;
   float: left;
   z-index: 1;
-  /*position: absolute;*/
 }
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
@@ -999,7 +996,6 @@ function resetYear() {
     .attr("transform", "translate(0,0)")
   d3.selectAll(".sparkline-wrapper > .sparkline").selectAll(".end-date")
     .attr("display", null)
-  // return
 }
 
 function mousemoveAnnualSum() {
@@ -1366,7 +1362,6 @@ d3.json("data/drones.json", function(error, json) {
         .attr("class", "overlay")
         .attr("width", timelineWidth)
         .attr("height", timelineHeight)
-        // .attr("opacity", 0)
         .attr("fill", "rgba(0,0,0,0)")
         .on("mouseover", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
         .on("mousemove", function(d) { highlightNearestNode(d3.mouse(this), $(this).parent().attr("id")) })
@@ -1378,7 +1373,6 @@ d3.json("data/drones.json", function(error, json) {
         .append("line")
         .attr("class", "error-bar")
         .attr("visibility", function(d) { if (d.country != currentCountry || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
-        // .attr("id", function(d) { return (d.country + " uid" + d.number) })
         .attr("id", function(d) { return ("uid" + d.number) })
         .attr("x1", function(d) { return xScale(new Date(d.date)) })
         .attr("y1", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "maximum"))) })
@@ -1395,7 +1389,6 @@ d3.json("data/drones.json", function(error, json) {
         .attr("visibility", function(d) { if (d.country != currentCountry || getIntegerFromString(d[currentDataType], "average") == 0) { return "hidden" } else { return "ok" } })
         .attr("value", function(d) { return getIntegerFromString(d[currentDataType], "average") })
         .attr("date", function(d) { return d.date })
-        // .attr("id", function(d) { return (d.country + " uid" + d.number) })
         .attr("id", function(d) { return ("uid" + d.number) })
         .attr("cx", function(d) { if (d.country == currentCountry && getIntegerFromString(d[currentDataType], "average") > 0) { dateArray[currentCountry].push(dateArrayFormatter(xScale(new Date(d.date)), d)) } return xScale(new Date(d.date)) })
         .attr("cy", function(d) { return (currentYScale(getIntegerFromString(d[currentDataType], "average"))) })
@@ -1504,16 +1497,16 @@ function highlightNode(id, country) {
   d3.select("circle.strike#" + id).style("opacity", 1)
 
   // TODO make tooltips work
-  d3.select("circle.timeline#" + id)
-    .append("text")
-      .attr("class", "tooltip")
-      .attr("id", this.link)
-      .text(function(d) { console.log(this);return this.link})
+  // d3.select("circle.timeline#" + id)
+  //   .append("text")
+  //     .attr("class", "tooltip")
+  //     .attr("id", this.link)
+  //     .text(function(d) { console.log(this);return this.link})
       // .style("width", 300)
       // .style("height", 300)
       // .style("background-color", "black")
       // .style("position", "absolute")
-      .style("z-index", 15)
+      // .style("z-index", 15)
 }
 
 function resetOpacity(country) {
